@@ -82,3 +82,36 @@ export const removeFavorite = async(recipeId)=>{
 
     }
 };
+
+/**
+ * Sends a PUT request to the backend to update the notes for a specific favorite recipe.
+ * This is a protected action and requires a JWT for authorization.
+ *
+ * @param {string} recipeId - The ID of the recipe whose notes are being updated.
+ * @param {string} notes - The new notes content to be saved.
+ * @returns {Promise<object>} A promise that resolves to the success message from the backend.
+ */
+export const updateFavoriteNotes = async (recipeId,notes)=>{
+  const token = localStorage.getItem('token');
+
+  if(!token){
+        throw new Error('Authentication token not found.');
+
+  }
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+    const body = { notes };
+    try {
+    //    - The second argument is the request body (the new notes).
+    //    - The third is the configuration object with our auth header.
+    const response = await axios.put(`${API_URL}/${recipeId}`, body, config);
+    
+    // 5. Return the success response from the backend.
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || new Error('Failed to update notes.');
+  }
+};

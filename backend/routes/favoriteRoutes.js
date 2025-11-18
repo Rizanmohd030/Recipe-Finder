@@ -1,93 +1,122 @@
-const express =require('express');
-
-const {protect} = require('../middleware/authMiddleware');
-
-const User = require('../models/User'); 
-
+const express = require('express');
+const { protect } = require('../middleware/authMiddleware');
+const User = require('../models/User');
 const asyncHandler = require('express-async-handler');
 
 const router = express.Router();
 
-//get favoritess
-const getFavorites = asyncHandler(async(req,res)=>{
-  const user = await User.findById(req.user._id);
+/**
+ * @desc    Add a recipe to favorites
+ * @route   POST /api/favorites
+ * @access  Private
+ */
+router.post(
+  '/',
+  protect,
+  asyncHandler(async (req, res) => {
+    const { recipeId } = req.body;
 
-  if(user){
-    res.status(200).json(user.favorites);
-
-  }else{
-    res.status(400);
-    throw new Error(" User not found");
-  }
-});
-
-
-const addFavorite = asyncHandler(async(req,res)=>{
-    const {recipeId} = req.body;
-
-     if (!recipeId) {
-    res.status(400); 
-    throw new Error('Recipe ID is required');
-  }
-
-    const user = await User.findById(req.user._id);
-
-    if(user){
-         if (user.favorites.includes(recipeId)) {
-      res.status(400); 
-      throw new Error('Recipe is already in favorites');
+    if (!recipeId) {
+      return res.status(400).json({ message: 'Recipe ID is required' });
     }
-    user.favorites.push(recipeId);
 
+    const user = await User.findById(req.user._id).select('+favorites');
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const exists = user.favorites.some((fav) => fav.recipeId === recipeId);
+    if (exists) {
+      return res.status(400).json({ message: 'Recipe already in favorites' });
+    }
+
+    user.favorites.push({ recipeId });
     await user.save();
-    res.status(201).json({
-      message: 'Recipe added to favorites successfully',
+
+    return res.status(201).json({
+      message: 'Recipe added to favorites',
       favorites: user.favorites,
     });
-  } else {
-    // This is an unlikely edge case if the token is valid but the user was deleted.
-    res.status(404);
-    throw new Error('User not found');
-  }
-});
-    
+  })
+);
 
+router.put('/:recipeId',protect,async(req,res)=>{
+  try{
+    const {recipeId} = req.params;
+    const {notes} = req.body;
 
-//remove favorite
-const removeFavorite = asyncHandler(async (req, res) => {
-  const { recipeId } = req.params;
-
-  const updatedUser = await User.findByIdAndUpdate(
-    req.user._id,
-    {
-     $pull: { favorites: recipeId },
-    },
-    {
-     new: true,
+    if (notes === undefined) {
+      return res.status(400).json({ message: 'Notes field is required' });
     }
-  );
-
-  if (updatedUser) {
-   
-    res.status(200).json({
-      message: 'Recipe removed from favorites successfully',
+      const updatedUser = await User.findOneAndUpdate(
+              { _id: req.user.id, 'favorites.recipeId': recipeId },
+                    { $set: { 'favorites.$.notes': notes } },
+                          { new: true }
+            );
+             if (!updatedUser) {
+      return res.status(404).json({ message: 'Favorite recipe not found for this user.' });
+    }
+     res.status(200).json({
+      message: 'Notes updated successfully',
       favorites: updatedUser.favorites,
     });
-  } else {
-   
-    res.status(404);
-    throw new Error('User not found');
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server Error' });
   }
 });
 
-router.route('/')
-.get(protect,getFavorites)
- .post(protect,addFavorite);
- 
- //delete requires dynamic parameters
- router.route('/:recipeId')
-      .delete(protect, removeFavorite);
+/**
+ * @desc    Get logged-in user's favorite recipes
+ * @route   GET /api/favorites
+ * @access  Private
+ */
+router.get(
+  '/',
+  protect,
+  asyncHandler(async (req, res) => {
+    const user = await User.findById(req.user._id).select('+favorites');
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    return res.status(200).json(user.favorites);
+  })
+);
+
+/**
+ * @desc    Remove a recipe from favorites
+ * @route   DELETE /api/favorites/:recipeId
+ * @access  Private
+ */
+router.delete(
+  '/:recipeId',
+  protect,
+  asyncHandler(async (req, res) => {
+    const { recipeId } = req.params;
+
+    const user = await User.findById(req.user._id).select('+favorites');
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const newFavorites = user.favorites.filter(
+      (fav) => fav.recipeId !== recipeId
+    );
+
+    user.favorites = newFavorites;
+    await user.save();
+
+    return res.status(200).json({
+      message: 'Recipe removed successfully',
+      favorites: user.favorites,
+    });
+  })
+);
 
 
-module.exports = router;      
 
+
+module.exports = router;

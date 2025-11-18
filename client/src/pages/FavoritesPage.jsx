@@ -1,73 +1,107 @@
 import React, { useState, useEffect } from "react";
-import { getFavorites, removeFavorite } from '../services/favoriteService';
+import { getFavorites, removeFavorite, updateFavoriteNotes } from "../services/favoriteService";
 import { getRecipeById } from "../services/recipeService";
 import RecipeCard from "../components/RecipeCard";
-import LoadingSpinner from '../components/LoadingSpinner';
+import LoadingSpinner from "../components/LoadingSpinner";
+import ErrorComponent from "../components/ErrorComponent";
+import NotesEditModal from "../components/NotesEditModal";
 
-import ErrorComponent from '../components/ErrorComponent';
-
-
-import "./FavoritesPage.css";
+import { Container, Grid, Typography, Box, Paper, Button } from "@mui/material";
 
 const FavoritesPage = () => {
-  const [favoriteIds, setFavoriteIds] = useState([]);        
-  const [favoriteRecipes, setFavoriteRecipes] = useState([]); 
+  const [favoriteRecipes, setFavoriteRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedRecipe, setSelectedRecipe] = useState(null);
+
   useEffect(() => {
-    const fetchFavorites = async () => {
+    const fetchAndProcessFavorites = async () => {
       try {
-        setError(null);
         setLoading(true);
 
-        // 1️⃣ Fetch favorite IDs from your backend
-        const ids = await getFavorites();
-        setFavoriteIds(ids);
+        const favoriteObject = await getFavorites(); 
 
-        if (ids.length === 0) {
+        if (favoriteObject.length === 0) {
           setFavoriteRecipes([]);
+          setLoading(false);
           return;
         }
 
-        // 2️⃣ Fetch full recipe data from TheMealDB API
-        const recipePromises = ids.map((id) => getRecipeById(id));
-        const recipes = await Promise.all(recipePromises);
+        // Extract array of IDs
+        const recipeIds = favoriteObject.map((fav) => fav.recipeId);
 
-        // 3️⃣ Save full recipe data into state
-        setFavoriteRecipes(recipes);
+        // Fetch details from TheMealDB
+        const recipeDetailPromises = recipeIds.map((id) => getRecipeById(id));
+        const fetchedRecipeDetails = await Promise.all(recipeDetailPromises);
+
+        // Merge details + notes
+        const combinedRecipes = fetchedRecipeDetails.map((recipe) => {
+          const fav = favoriteObject.find((f) => f.recipeId === recipe.idMeal);
+
+          return {
+            ...recipe,
+            notes: fav ? fav.notes : "",
+          };
+        });
+
+        setFavoriteRecipes(combinedRecipes);
       } catch (err) {
-        console.error("❌ Error fetching favorites:", err);
-        setError(
-          err.message || "An error occurred while fetching your favorites."
-        );
+        console.error("Error loading favorites:", err);
+        setError(err.message || "Failed to load favorites.");
       } finally {
         setLoading(false);
       }
     };
 
-    fetchFavorites();
+    fetchAndProcessFavorites();
   }, []);
 
-   const handleRemoveFavorite = async (recipeId) => {
+  const handleRemoveFavorite = async (recipeId) => {
     try {
       await removeFavorite(recipeId);
 
-     
-      setFavoriteRecipes((prevRecipes) =>
-        prevRecipes.filter((recipe) => recipe.idMeal !== recipeId)
-      );
+      setFavoriteRecipes((prev) => prev.filter((r) => r.idMeal !== recipeId));
     } catch (err) {
-      console.error('Failed to remove favorite:', err);
-      alert(err.message || 'Could not remove favorite. Please try again.');
+      console.error("Failed to remove favorite:", err);
+      alert("Could not remove favorite. Try again.");
     }
   };
 
-  // 🌀 Loading state
-if (loading) return <LoadingSpinner />;
+  const handleOpenModal = (recipe) => {
+    setSelectedRecipe(recipe);
+    setIsModalOpen(true);
+  };
 
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedRecipe(null);
+  };
 
-  // ⚠️ Error state
+  const handleSaveNotes = async (recipeId, newNotes) => {
+    try {
+      // 1. update backend
+      await updateFavoriteNotes(recipeId, newNotes);
+
+      // 2. update UI
+      setFavoriteRecipes((prev) =>
+        prev.map((recipe) =>
+          recipe.idMeal === recipeId
+            ? { ...recipe, notes: newNotes }
+            : recipe
+        )
+      );
+
+      handleCloseModal();
+    } catch (err) {
+      console.error("Failed to save notes:", err);
+      alert("Could not save notes. Try again.");
+    }
+  };
+
+  if (loading) return <LoadingSpinner />;
+
   if (error) {
     return (
       <Container sx={{ py: 4 }}>
@@ -76,31 +110,92 @@ if (loading) return <LoadingSpinner />;
     );
   }
 
-  // ✅ Render recipes
-return (
-    <div className="favorites-page-container">
-      <h1>My Favorite Recipes</h1>
-      
-      {favoriteRecipes.length === 0 ? (
-        <p>You haven't saved any favorite recipes yet. Start exploring!</p>
-      ) : (
-        <div className="recipe-grid">
-          {favoriteRecipes.map(recipe => (
-            <div key={recipe.idMeal} className="favorite-card-container">
-              <RecipeCard recipe={recipe} />
-              <button 
-                onClick={() => handleRemoveFavorite(recipe.idMeal)}
-                className="remove-button"
-              >
-                Remove
-              </button>
-            </div>
-          ))}
-        </div>
+  return (
+    <>
+      <Container sx={{ py: 4 }}>
+        <Typography variant="h3" align="center" gutterBottom>
+          My Favorite Recipes
+        </Typography>
+
+        {favoriteRecipes.length === 0 ? (
+          <Typography variant="body1" align="center" sx={{ mt: 4 }}>
+            You haven’t saved any favorite recipes yet. Start exploring!
+          </Typography>
+        ) : (
+          <Grid container spacing={4} sx={{ mt: 4 }}>
+            {favoriteRecipes.map((recipe) => (
+              <Grid item key={recipe.idMeal} xs={12} sm={6} md={4} lg={3}>
+                <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
+                  <Box sx={{ flexGrow: 1 }}>
+                    <RecipeCard recipe={recipe} />
+                  </Box>
+
+                  <Paper
+                    variant="outlined"
+                    sx={{
+                      p: 2,
+                      mt: -1,
+                      borderTopLeftRadius: 0,
+                      borderTopRightRadius: 0,
+                      bgcolor: "background.default",
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        mb: 1,
+                      }}
+                    >
+                      <Typography variant="subtitle2" sx={{ fontWeight: "bold" }}>
+                        My Notes:
+                      </Typography>
+
+                      <Button
+                        variant="outlined"
+                        size="small"
+                        onClick={() => handleOpenModal(recipe)}
+                      >
+                        Edit
+                      </Button>
+                    </Box>
+
+                    {recipe.notes ? (
+                      <Typography
+                        variant="body2"
+                        sx={{ fontStyle: "italic", whiteSpace: "pre-wrap" }}
+                      >
+                        {recipe.notes}
+                      </Typography>
+                    ) : (
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        sx={{ fontStyle: "italic" }}
+                      >
+                        No notes yet. Add one!
+                      </Typography>
+                    )}
+                  </Paper>
+                </Box>
+              </Grid>
+            ))}
+          </Grid>
+        )}
+      </Container>
+
+      {/* Render modal only when a recipe is selected */}
+      {selectedRecipe && (
+        <NotesEditModal
+          open={isModalOpen}
+          onClose={handleCloseModal}
+          recipe={selectedRecipe}
+          onSave={handleSaveNotes}
+        />
       )}
-    </div>
+    </>
   );
 };
 
 export default FavoritesPage;
-
