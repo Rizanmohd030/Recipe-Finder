@@ -19,7 +19,7 @@ const Navbar = () => {
     <nav className="navbar">
       <div className="navbar-brand">
         {/* Link the brand/logo to the homepage */}
-        <Link to="/" className="navbar-logo">RecipeFinder</Link>
+        <Link to="/" className="navbar-logo">RecipeHunt</Link>
       </div>
 
       <ul className="navbar-links">
