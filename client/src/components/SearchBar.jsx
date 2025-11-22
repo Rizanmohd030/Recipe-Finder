@@ -1,82 +1,86 @@
-// src/components/SearchBar.jsx
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Box, TextField, Button } from "@mui/material";
 
-import React from "react";
-import { Box, TextField, Button, Grid } from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
+const SearchBar = () => {
+  const [query, setQuery] = useState("");
+  const navigate = useNavigate();
 
-/**
- * SearchBar component — works with query, setQuery, and handleSearch props from HomePage
- */
-const SearchBar = ({ query, setQuery, handleSearch }) => {
-  const handleSubmit = (event) => {
-    event.preventDefault();
+  const handleSearch = () => {
     if (query.trim()) {
-      handleSearch(event);
+      navigate(`/?search=${query}`);
     }
+  };
+
+  const handleScan = () => {
+    navigate("/scan");
   };
 
   return (
     <Box
-      component="form"
-      onSubmit={handleSubmit}
-      sx={{
-        width: "100%",
-        mt: 3,
-        mb: 4,
-        display: "flex",
-        justifyContent: "center",
-      }}
-    >
-      <Grid container spacing={2} sx={{ maxWidth: 700, px: 2 }}>
-        {/* Text Input */}
-        <Grid item xs={12} sm={9}>
-          <TextField
-            variant="outlined"
-            label="Search for a recipe..."
-            fullWidth
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            sx={{
-              backgroundColor: "white",
-              borderRadius: "8px",
-              "& .MuiOutlinedInput-root": {
-                "& fieldset": {
-                  borderColor: "#ccc",
-                },
-                "&:hover fieldset": {
-                  borderColor: "primary.main",
-                },
-              },
-            }}
-          />
-        </Grid>
+  sx={{
+    display: "flex",
+    justifyContent: "center",   // 👈 makes the whole group centered
+    alignItems: "center",
+    gap: 2,
+    mt: 3,
+    width: "100%",
+  }}
+>
+  {/* INPUT FIELD */}
+  <TextField
+    variant="outlined"
+    placeholder="Search recipes..."
+    value={query}
+    onChange={(e) => setQuery(e.target.value)}
+    sx={{
+      flex: "0 0 50%",    // 👈 makes input shorter + centered nicely
+      maxWidth: "400px",  // 👈 avoids stretching too far on big screens
+      background: "#fff",
+      borderRadius: 2,
+    }}
+  />
 
-        {/* Search Button */}
-        <Grid item xs={12} sm={3}>
-          <Button
-            type="submit"
-            color="primary"
-            fullWidth
-            size="large"
-            startIcon={<SearchIcon />}
-           variant="outlined"
-            sx={{
-                    textTransform: "none",
-                    fontWeight: 600,
-                    borderRadius: 2,
-                    borderColor: "primary.main",
-                    color: "primary.main",
-                    "&:hover": {
-                      borderColor: "primary.dark",
-                      backgroundColor: "rgba(255,145,0,0.08)",
-                    },
-                  }}
-          >
-            Search
-          </Button>
-        </Grid>
-      </Grid>
-    </Box>
+  {/* SEARCH BUTTON */}
+  <Button
+    variant="contained"
+    onClick={handleSearch}
+    sx={{
+      textTransform: "none",
+      fontWeight: 600,
+      borderRadius: 2,
+      px: 3,
+      background: "linear-gradient(90deg, #FF8E0A 0%, #FF6D00 100%)",
+      "&:hover": {
+        background:
+          "linear-gradient(90deg, #FF9800 0%, #F57C00 100%)",
+      },
+      height: "56px", // perfectly aligns with TextField height
+    }}
+  >
+    Search
+  </Button>
+
+  {/* SCAN BUTTON */}
+  <Button
+    variant="contained"
+    onClick={handleScan}
+    sx={{
+      textTransform: "none",
+      fontWeight: 600,
+      borderRadius: 2,
+      px: 3,
+      background: "linear-gradient(90deg, #FF8E0A 0%, #FF6D00 100%)",
+      "&:hover": {
+        background:
+          "linear-gradient(90deg, #FF9800 0%, #F57C00 100%)",
+      },
+      height: "56px",
+    }}
+  >
+    Scan
+  </Button>
+</Box>
   );
 };
 

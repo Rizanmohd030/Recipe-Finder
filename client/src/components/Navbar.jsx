@@ -51,6 +51,7 @@ const Navbar = () => {
                   Hi, {user.name} 👋
                 </Typography>
 
+                {/* Favorites */}
                 <Button
                   component={Link}
                   to="/favorites"
@@ -70,6 +71,9 @@ const Navbar = () => {
                   My Favorites
                 </Button>
 
+              
+
+                {/* Logout */}
                 <Button
                   onClick={handleLogout}
                   variant="contained"

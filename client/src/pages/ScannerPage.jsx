@@ -1,0 +1,240 @@
+import React, { useState, useRef, useEffect } from "react";
+import { Box, Button, Typography, CircularProgress } from "@mui/material";
+import RecipeCard from "../components/RecipeCard";
+
+export default function ScannerPage() {
+  const [imagePreview, setImagePreview] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState(null);
+  const [recipes, setRecipes] = useState([]);
+
+  const videoRef = useRef(null);
+  const inputRef = useRef(null);
+  const streamRef = useRef(null);
+  const capturingRef = useRef(false);
+
+  // Start camera on mount
+  useEffect(() => {
+    startCamera();
+    return () => stopCamera();
+  }, []);
+
+  const startCamera = async () => {
+    try {
+      streamRef.current = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: "environment" },
+      });
+
+      if (videoRef.current) {
+        videoRef.current.srcObject = streamRef.current;
+        await videoRef.current.play().catch(() => {});
+      }
+    } catch (err) {
+      console.error("Camera error:", err);
+    }
+  };
+
+  const stopCamera = () => {
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach((t) => t.stop());
+    }
+  };
+
+  // CAPTURE PHOTO
+  const capturePhoto = async () => {
+    if (capturingRef.current) return;
+    capturingRef.current = true;
+
+    const canvas = document.createElement("canvas");
+    canvas.width = videoRef.current.videoWidth;
+    canvas.height = videoRef.current.videoHeight;
+
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(videoRef.current, 0, 0);
+
+    const base64 = canvas.toDataURL("image/jpeg");
+    setImagePreview(base64);
+
+    await processImage(base64);
+    capturingRef.current = false;
+  };
+
+  // UPLOAD IMAGE
+  const handleUpload = (e) => {
+    if (capturingRef.current) return;
+    capturingRef.current = true;
+
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onloadend = async () => {
+      setImagePreview(reader.result);
+      await processImage(reader.result);
+      capturingRef.current = false;
+    };
+    reader.readAsDataURL(file);
+  };
+
+  // SEND TO BACKEND
+  const processImage = async (base64) => {
+    setLoading(true);
+
+    try {
+      const res = await fetch("/api/vision/identify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ image: base64 }),
+      });
+
+      const data = await res.json();
+      console.log("Detected Food:", data);
+
+      setResult(data.foodName);
+      setRecipes(data.recipes || []);
+
+    } catch (err) {
+      console.error("Process error:", err);
+    }
+
+    setLoading(false);
+  };
+
+  return (
+    <Box sx={{ pt: 4, px: 2, textAlign: "center" }}>
+      <Typography variant="h4" sx={{ fontWeight: 700, mb: 2 }}>
+        Scan Food
+      </Typography>
+
+      {/* CAMERA + BUTTON BLOCK (centered together) */}
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",   // centers camera + buttons as ONE group
+          justifyContent: "center",
+          width: "100%",
+          mt: 2,
+        }}
+      >
+
+        {/* CAMERA VIEW */}
+        {!imagePreview && (
+          <video
+            ref={videoRef}
+            style={{
+              width: "60%",          // smaller camera
+              maxWidth: "350px",     // limit width
+              borderRadius: "12px",
+              boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+            }}
+          />
+        )}
+
+        {/* IMAGE PREVIEW */}
+        {imagePreview && (
+          <img
+            src={imagePreview}
+            style={{
+              width: "60%",
+              maxWidth: "350px",
+              borderRadius: "12px",
+              boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
+              marginBottom: "10px",
+            }}
+          />
+        )}
+
+        {/* BUTTONS BELOW CAMERA */}
+        <Box
+          sx={{
+            width: "60%",            // EXACT same width as camera
+            maxWidth: "350px",
+            mt: 1.5,
+            display: "flex",
+            flexDirection: "column",
+            gap: 1.2,
+            alignItems: "center",     // center buttons relative to camera
+          }}
+        >
+
+          <Button
+            variant="contained"
+            onClick={capturePhoto}
+            sx={{
+              width: "100%",          // match camera width
+              py: 1,
+              fontSize: "0.95rem",
+              fontWeight: 700,
+              borderRadius: 2,
+              background: "linear-gradient(90deg, #FF8E0A 0%, #FF6D00 100%)",
+              "&:hover": {
+                background: "linear-gradient(90deg, #FF9800 0%, #F57C00 100%)",
+              },
+            }}
+          >
+            Capture from Camera
+          </Button>
+
+          <input
+            type="file"
+            accept="image/*"
+            ref={inputRef}
+            onChange={handleUpload}
+            style={{ display: "none" }}
+          />
+
+          <Button
+            variant="outlined"
+            onClick={() => inputRef.current.click()}
+            sx={{
+              width: "100%",         // match camera width
+              py: 1,
+              fontSize: "0.95rem",
+              fontWeight: 700,
+              borderRadius: 2,
+              borderColor: "primary.main",
+              color: "primary.main",
+              "&:hover": {
+                backgroundColor: "rgba(255,145,0,0.08)",
+                borderColor: "primary.dark",
+              },
+            }}
+          >
+            Upload a Photo Instead
+          </Button>
+
+        </Box>
+      </Box>
+
+      {/* LOADING */}
+      {loading && (
+        <Box sx={{ mt: 3 }}>
+          <CircularProgress size={40} />
+          <Typography sx={{ mt: 1 }}>Processing...</Typography>
+        </Box>
+      )}
+
+      {/* RESULT */}
+      {result && (
+        <Typography sx={{ mt: 3, fontSize: "1.2rem", fontWeight: 600 }}>
+          Detected: {result}
+        </Typography>
+      )}
+
+      {/* RECIPE RESULTS */}
+      <Box
+        sx={{
+          mt: 3,
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
+          gap: 2,
+        }}
+      >
+        {recipes.map((recipe) => (
+          <RecipeCard key={recipe.idMeal} recipe={recipe} />
+        ))}
+      </Box>
+    </Box>
+  );
+}
