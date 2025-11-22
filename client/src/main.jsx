@@ -5,6 +5,8 @@ import { BrowserRouter } from 'react-router-dom';
 
 import { AuthProvider } from './context/AuthContext';
 import theme from './theme.js';
+import "./global.css";
+
 
 
 // import './index.css';

@@ -1,78 +1,73 @@
-// src/context/AuthContext.jsx
 import React, { createContext, useState, useEffect, useContext } from "react";
-import { useNavigate } from "react-router-dom";
 
-// Helper to decode JWT
-const parseJwt = (token) => {
-  try {
-    return JSON.parse(atob(token.split(".")[1]));
-  } catch (err) {
-    return null;
-  }
-};
-
+// Create our global auth context
 export const AuthContext = createContext(null);
 
+// Custom hook for easy usage: const { user, login, logout } = useAuth()
 export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
+  // "user" holds all logged-in user data
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
 
-  // Load user from token on initial mount
+  /**
+   * ----------------------------------------------------
+   * Load user from localStorage on page refresh
+   * ----------------------------------------------------
+   * This makes the login persistent.
+   * Without this, refreshing the website would lose the user
+   * and show "Hi, User" or logged-out state.
+   */
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const storedUser = localStorage.getItem("user");
+    const storedToken = localStorage.getItem("token");
 
-    if (token) {
-      const decodedUser = parseJwt(token);
-
-      if (decodedUser && decodedUser.exp * 1000 > Date.now()) {
-        setUser({
-          id: decodedUser.id,
-          name: decodedUser.name || decodedUser.email?.split("@")[0] || "User",
-          email: decodedUser.email || "unknown",
-        });
-      } else {
-        localStorage.removeItem("token");
-        setUser(null);
-      }
-    } else {
-      setUser(null);
+    if (storedUser && storedToken) {
+      // restore user object
+      setUser(JSON.parse(storedUser));
     }
-
-    setLoading(false);
   }, []);
 
-  // Login → updates context with backend data
- const login = (userData) => {
-  if (!userData) return;
+  /**
+   * ----------------------------------------------------
+   * Login handler
+   * ----------------------------------------------------
+   * Called by LoginPage when login is successful.
+   * Stores the full user + token in both React state AND localStorage.
+   * This ensures:
+   *    - Navbar shows correct name instantly
+   *    - After refresh, the name persists
+   */
+  const login = (data) => {
+    const normalizedUser = {
+      id: data._id || data.id, // backend can send _id or id
+      name: data.name,
+      email: data.email,
+      token: data.token,
+    };
 
-  const normalizedUser = {
-    id: userData.id || userData._id, // backend sends _id
-    name: userData.name || userData.email?.split("@")[0] || "User",
-    email: userData.email,
+    setUser(normalizedUser);
+
+    // Persist user session
+    localStorage.setItem("user", JSON.stringify(normalizedUser));
+    localStorage.setItem("token", data.token);
   };
 
-  setUser(normalizedUser);
-};
-  // Logout → clears context + token + navigates
+  /**
+   * ----------------------------------------------------
+   * Logout handler
+   * ----------------------------------------------------
+   * Clears user from state and localStorage.
+   */
   const logout = () => {
     setUser(null);
+    localStorage.removeItem("user");
     localStorage.removeItem("token");
-    navigate("/login");
-  };
-
-  const authContextValue = {
-    user,
-    login,
-    logout,
-    loading,
   };
 
   return (
-    <AuthContext.Provider value={authContextValue}>
-      {!loading && children}
+    <AuthContext.Provider value={{ user, login, logout }}>
+      {children}
     </AuthContext.Provider>
   );
 };

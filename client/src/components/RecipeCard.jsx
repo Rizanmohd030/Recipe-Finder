@@ -1,4 +1,3 @@
-// src/components/RecipeCard.jsx
 
 import React from "react";
 import { Link } from "react-router-dom";
@@ -11,10 +10,7 @@ import {
   Box,
 } from "@mui/material";
 
-/**
- * RecipeCard component - modern MUI version.
- * Displays a recipe thumbnail and title as a clickable card.
- */
+
 const RecipeCard = ({ recipe }) => {
   const { idMeal, strMeal, strMealThumb } = recipe;
 
@@ -22,20 +18,24 @@ const RecipeCard = ({ recipe }) => {
     <Card
       sx={{
         height: "100%",
-        borderRadius: 3,
-        boxShadow: "0 4px 20px rgba(0, 0, 0, 0.08)",
-        transition: "transform 0.25s ease, box-shadow 0.25s ease",
+        borderRadius: 4,
+        overflow: "hidden",
+        backgroundColor: "background.paper",
+        boxShadow: "0 6px 18px rgba(16, 24, 40, 0.06)",
+        transition:
+          "transform 220ms cubic-bezier(.2,.8,.2,1), box-shadow 220ms",
         "&:hover": {
           transform: "translateY(-6px)",
-          boxShadow: "0 6px 25px rgba(0, 0, 0, 0.15)",
+          boxShadow: "0 12px 36px rgba(16,24,40,0.10)",
         },
       }}
     >
       <CardActionArea
         component={Link}
         to={`/recipe/${idMeal}`}
-        sx={{ display: "flex", flexDirection: "column", height: "100%" }}
+        sx={{ height: "100%", display: "flex", flexDirection: "column" }}
       >
+        {/* IMAGE */}
         <CardMedia
           component="img"
           height="200"
@@ -43,25 +43,25 @@ const RecipeCard = ({ recipe }) => {
           alt={strMeal}
           sx={{
             objectFit: "cover",
-            borderTopLeftRadius: 12,
-            borderTopRightRadius: 12,
+            width: "100%",
           }}
         />
+
+        {/* CONTENT */}
         <CardContent
           sx={{
-            flexGrow: 1,
             width: "100%",
             textAlign: "center",
-            backgroundColor: "background.paper",
+            py: 2.5,
+            px: 2,
           }}
         >
           <Typography
             variant="h6"
-            component="div"
             sx={{
               fontWeight: 600,
+              fontSize: "1.05rem",
               color: "text.primary",
-              fontSize: "1rem",
               whiteSpace: "nowrap",
               overflow: "hidden",
               textOverflow: "ellipsis",

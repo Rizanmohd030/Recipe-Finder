@@ -1,8 +1,10 @@
 // src/components/Navbar.jsx
+
 import React from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import "./Navbar.css";
+
+import { AppBar, Toolbar, Box, Button, Typography, Container } from "@mui/material";
 
 const Navbar = () => {
   const { user, logout } = useAuth();
@@ -12,49 +14,119 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="nav-container">
-      <div className="nav-inner">
+    <AppBar
+      position="sticky"
+      elevation={0}
+      sx={{
+        bgcolor: "white",
+        borderBottom: "1px solid rgba(0,0,0,0.06)",
+        boxShadow: "0 4px 18px rgba(0,0,0,0.06)",
+        py: 0.5,
+      }}
+    >
+      <Container maxWidth="lg">
+        <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
 
-        {/* Brand */}
-        <Link to="/" className="nav-logo">
-          Recipe<span>Hunt</span>
-        </Link>
+          {/* Logo */}
+          <Typography
+            component={Link}
+            to="/"
+            sx={{
+              textDecoration: "none",
+              fontSize: "1.6rem",
+              fontWeight: 800,
+              color: "primary.main",
+              letterSpacing: "-0.5px",
+            }}
+          >
+            RecipeHunt
+          </Typography>
 
-        {/* Links */}
-        <ul className="nav-links">
-          {user ? (
-            <>
-              <li className="nav-greeting">Hi, {user.name}</li>
+          {/* RIGHT SIDE */}
+          <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
 
-              <li>
-                <Link to="/favorites" className="nav-link">
-                  Favorites
-                </Link>
-              </li>
+            {user ? (
+              <>
+                <Typography sx={{ color: "text.secondary", fontWeight: 500 }}>
+                  Hi, {user.name} 👋
+                </Typography>
 
-              <li>
-                <button className="logout-btn" onClick={handleLogout}>
+                <Button
+                  component={Link}
+                  to="/favorites"
+                  variant="outlined"
+                  sx={{
+                    textTransform: "none",
+                    fontWeight: 600,
+                    borderRadius: 2,
+                    borderColor: "primary.main",
+                    color: "primary.main",
+                    "&:hover": {
+                      borderColor: "primary.dark",
+                      backgroundColor: "rgba(255,145,0,0.08)",
+                    },
+                  }}
+                >
+                  My Favorites
+                </Button>
+
+                <Button
+                  onClick={handleLogout}
+                  variant="contained"
+                  sx={{
+                    textTransform: "none",
+                    fontWeight: 600,
+                    borderRadius: 2,
+                    background:
+                      "linear-gradient(90deg, #FF8E0A 0%, #FF6D00 100%)",
+                    "&:hover": {
+                      background:
+                        "linear-gradient(90deg, #FF9800 0%, #F57C00 100%)",
+                    },
+                  }}
+                >
                   Logout
-                </button>
-              </li>
-            </>
-          ) : (
-            <>
-              <li>
-                <Link to="/login" className="nav-link">
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button
+                  component={Link}
+                  to="/login"
+                  sx={{
+                    textTransform: "none",
+                    fontWeight: 600,
+                    borderRadius: 2,
+                    color: "text.primary",
+                  }}
+                >
                   Login
-                </Link>
-              </li>
-              <li>
-                <Link to="/register" className="nav-btn">
+                </Button>
+
+                <Button
+                  component={Link}
+                  to="/register"
+                  variant="contained"
+                  sx={{
+                    textTransform: "none",
+                    fontWeight: 600,
+                    borderRadius: 2,
+                    background:
+                      "linear-gradient(90deg, #FF8E0A 0%, #FF6D00 100%)",
+                    "&:hover": {
+                      background:
+                        "linear-gradient(90deg, #FF9800 0%, #F57C00 100%)",
+                    },
+                  }}
+                >
                   Register
-                </Link>
-              </li>
-            </>
-          )}
-        </ul>
-      </div>
-    </nav>
+                </Button>
+              </>
+            )}
+          </Box>
+        </Toolbar>
+      </Container>
+    </AppBar>
   );
 };
 

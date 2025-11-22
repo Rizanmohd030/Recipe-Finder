@@ -1,42 +1,56 @@
+// src/App.jsx
+import { Routes, Route } from "react-router-dom";
+import Navbar from "./components/Navbar";
+import FavoritesPage from "./pages/FavoritesPage";
+import ProtectedRoute from "./components/ProtectedRoute";
+import HomePage from "./pages/HomePage";
+import RecipePage from "./pages/RecipePage";
+import LoginPage from "./pages/LoginPage";
+import RegisterPage from "./pages/RegisterPage";
+import Footer from "./components/Footer";
 
-import { Routes, Route } from 'react-router-dom';
-import Navbar from './components/Navbar';
-import FavoritesPage from './pages/FavoritesPage';
-import ProtectedRoute from './components/ProtectedRoute';
-import HomePage from './pages/HomePage';
-import RecipePage from './pages/RecipePage';
-import LoginPage from './pages/LoginPage';
-import RegisterPage from './pages/RegisterPage';
-
-import Footer from './components/Footer';
-import { Box } from '@mui/material';
-
-import NotFoundPage from './pages/NotFoundPage';
-
+import { Box } from "@mui/material";
+import NotFoundPage from "./pages/NotFoundPage";
 
 function App() {
   return (
-   
-    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        minHeight: "100vh",
+        bgcolor: "background.default",
+      }}
+    >
       <Navbar />
-      
-      <main style={{ flexGrow: 1 }}>
+
+      {/* Unified Page Content Wrapper */}
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          mt: 2,
+          mb: 4,
+        }}
+      >
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/recipe/:recipeId" element={<RecipePage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
-          <Route 
-            path="/favorites" 
+
+          <Route
+            path="/favorites"
             element={
               <ProtectedRoute>
                 <FavoritesPage />
               </ProtectedRoute>
-            } 
+            }
           />
+
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
-      </main>
+      </Box>
 
       <Footer />
     </Box>

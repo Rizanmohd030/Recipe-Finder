@@ -1,0 +1,61 @@
+/* src/global.css */
+
+/* Smooth font rendering */
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: "Montserrat", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  background-color: #fafafa; /* matches your theme */
+}
+
+/* Improve scroll behavior */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Remove blue highlight on mobile */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Smooth animations for interactive elements */
+button, a, input, textarea {
+  transition: all 0.2s ease;
+}
+
+/* Improve scrollbar (subtle, premium feel) */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #f4f4f4;
+}
+::-webkit-scrollbar-thumb {
+  background: #e0e0e0;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #c6c6c6;
+}
+
+/* Card spacing consistency */
+.MuiCard-root {
+  border-radius: 16px !important;
+}
+
+/* Improve link look */
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Make clickable elements feel nice */
+button:hover, a:hover {
+  opacity: 0.95;
+}
+
+/* Disable selection on navbar elements */
+nav, header {
+  user-select: none;
+}

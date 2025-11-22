@@ -55,24 +55,22 @@ const SearchBar = ({ query, setQuery, handleSearch }) => {
         <Grid item xs={12} sm={3}>
           <Button
             type="submit"
-            variant="contained"
             color="primary"
             fullWidth
             size="large"
             startIcon={<SearchIcon />}
+           variant="outlined"
             sx={{
-              height: "56px",
-              borderRadius: "8px",
-              textTransform: "none",
-              fontWeight: 600,
-              letterSpacing: "0.5px",
-              background:
-                "linear-gradient(90deg, #6D28D9 0%, #9333EA 100%)",
-              "&:hover": {
-                background:
-                  "linear-gradient(90deg, #7E22CE 0%, #A855F7 100%)",
-              },
-            }}
+                    textTransform: "none",
+                    fontWeight: 600,
+                    borderRadius: 2,
+                    borderColor: "primary.main",
+                    color: "primary.main",
+                    "&:hover": {
+                      borderColor: "primary.dark",
+                      backgroundColor: "rgba(255,145,0,0.08)",
+                    },
+                  }}
           >
             Search
           </Button>

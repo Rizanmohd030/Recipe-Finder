@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 import { login as loginService } from "../services/authService";
 import { useAuth } from "../context/AuthContext";
 
-// --- MUI Imports ---
 import {
   Container,
   Box,
@@ -23,7 +22,6 @@ const LoginPage = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  // Handle input field changes
   const handleChange = (e) => {
     if (error) setError(null);
     setFormData({
@@ -32,33 +30,26 @@ const LoginPage = () => {
     });
   };
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
 
     try {
       const data = await loginService(formData);
-      console.log("Login successful!", data);
 
-    if (data.token) {
-  localStorage.setItem("token", data.token);
-  login(data); // ✅ pass the whole response directly
-  navigate("/");
-} // navigate after login
-      
+      if (data.token) {
+        localStorage.setItem("token", data.token);
+        login(data);
+        navigate("/");
+      }
     } catch (err) {
-      console.error(err);
-      setError(
-        err.message || "An unexpected error occurred. Please try again."
-      );
+      setError(err.message || "Login failed. Try again.");
     }
   };
 
   return (
     <Container
-      component="main"
-      maxWidth="xs"
+      maxWidth="sm"
       sx={{
         minHeight: "100vh",
         display: "flex",
@@ -67,90 +58,101 @@ const LoginPage = () => {
       }}
     >
       <Paper
-        elevation={6}
+        elevation={3}
         sx={{
-          p: 4,
-          borderRadius: 3,
-          background:
-            "linear-gradient(145deg, rgba(255,255,255,0.9), rgba(245,245,245,0.95))",
-          backdropFilter: "blur(8px)",
+          px: 5,
+          py: 6,
+          borderRadius: 4,
+          width: "100%",
+          background: "linear-gradient(135deg, #ffffff 0%, #fff6e5 100%)",
+          boxShadow:
+            "0 8px 30px rgba(0,0,0,0.06), 0 4px 15px rgba(0,0,0,0.03)",
         }}
       >
-        <Box
+        <Typography
+          variant="h4"
+          align="center"
           sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
+            fontWeight: 700,
+            mb: 1,
+            color: "primary.main",
+            letterSpacing: "-0.5px",
           }}
         >
-          <Typography component="h1" variant="h5" sx={{ mb: 2 }}>
-            Welcome Back 👋
-          </Typography>
+          Welcome Back
+        </Typography>
 
-          {error && (
-            <Alert
-              severity="error"
-              sx={{
-                width: "100%",
-                mb: 2,
+        <Typography
+          variant="subtitle1"
+          align="center"
+          sx={{ color: "text.secondary", mb: 4 }}
+        >
+          Please log in to continue
+        </Typography>
+
+        {error && (
+          <Alert severity="error" sx={{ mb: 3 }}>
+            {error}
+          </Alert>
+        )}
+
+        <Box component="form" onSubmit={handleSubmit}>
+
+          {/* Email */}
+          <TextField
+            fullWidth
+            margin="normal"
+            label="Email Address"
+            name="email"
+            type="email"
+            value={formData.email}
+            onChange={handleChange}
+            sx={{
+              "& .MuiOutlinedInput-root": {
                 borderRadius: 2,
-              }}
-            >
-              {error}
-            </Alert>
-          )}
+              },
+            }}
+            required
+          />
 
-          <Box
-            component="form"
-            onSubmit={handleSubmit}
-            sx={{ width: "100%", mt: 1 }}
+          {/* Password */}
+          <TextField
+            fullWidth
+            margin="normal"
+            label="Password"
+            name="password"
+            type="password"
+            value={formData.password}
+            onChange={handleChange}
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                borderRadius: 2,
+              },
+            }}
+            required
+          />
+
+          {/* Login Button */}
+          <Button
+            fullWidth
+            type="submit"
+            variant="contained"
+            size="large"
+            sx={{
+              mt: 3,
+              py: 1.4,
+              fontWeight: 600,
+              borderRadius: 2,
+              background: "linear-gradient(90deg, #ff9800, #f57c00)",
+              "&:hover": {
+                background: "linear-gradient(90deg, #fb8c00, #ef6c00)",
+              },
+              fontSize: "1rem",
+              letterSpacing: "0.5px",
+            }}
           >
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoComplete="email"
-              value={formData.email}
-              onChange={handleChange}
-            />
-
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-              value={formData.password}
-              onChange={handleChange}
-            />
-
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              size="large"
-              sx={{
-                mt: 3,
-                mb: 2,
-                py: 1.2,
-                fontWeight: 600,
-                background:
-                  "linear-gradient(90deg, #6D28D9 0%, #9333EA 100%)",
-                "&:hover": {
-                  background:
-                    "linear-gradient(90deg, #7E22CE 0%, #A855F7 100%)",
-                },
-              }}
-            >
-              Log In
-            </Button>
-          </Box>
+            Log In
+          </Button>
         </Box>
       </Paper>
     </Container>

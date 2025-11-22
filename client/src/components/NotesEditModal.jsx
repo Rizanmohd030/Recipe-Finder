@@ -1,6 +1,6 @@
+// src/components/NotesEditModal.jsx
 
-import React, { useState, useEffect } from 'react';
-
+import React, { useState, useEffect } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -8,69 +8,106 @@ import {
   DialogActions,
   TextField,
   Button,
-  Typography
-} from '@mui/material';
+  Typography,
+  Box,
+  Paper,
+} from "@mui/material";
 
 /**
- * A modal dialog for editing the notes of a favorite recipe.
- *
- * @param {object} props - The component's props.
- * @param {boolean} props.open - Controls if the modal is open or closed.
- * @param {function} props.onClose - Function to call when the modal should be closed.
- * @param {object} props.recipe - The recipe object being edited.
- * @param {function} props.onSave - Function to call when the user clicks 'Save'.
- * @returns {React.ReactElement} A dialog component.
+ * Premium Orange/Glass Notes Modal (Style B)
  */
 const NotesEditModal = ({ open, onClose, recipe, onSave }) => {
-  // We manage the notes text in a local state within the modal.
-  // This makes the TextField a "controlled component".
-  const [notesText, setNotesText] = useState('');
+  const [notesText, setNotesText] = useState("");
 
-  
   useEffect(() => {
-    // If a recipe is passed to the modal, set our local state to its notes.
-    // This populates the textarea when the modal opens.
     if (recipe) {
-      setNotesText(recipe.notes);
+      setNotesText(recipe.notes || "");
     }
-  }, [recipe]); 
+  }, [recipe]);
 
-  
+  if (!recipe) return null;
+
   const handleSave = () => {
-        onSave(recipe.idMeal, notesText);
-
+    onSave(recipe.idMeal, notesText);
   };
 
-  if (!recipe) {
-    return null;
-  }
-
   return (
-    // The Dialog component from MUI. `onClose` is called when the user clicks
-    // the backdrop or presses the Escape key.
-    <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
-      <DialogTitle>Edit Notes for {recipe.strMeal}</DialogTitle>
-      <DialogContent>
-        <Typography variant="body2" sx={{ mb: 2 }}>
-          Add or update your personal notes for this recipe.
+    <Dialog
+      open={open}
+      onClose={onClose}
+      maxWidth="sm"
+      fullWidth
+      PaperProps={{
+        elevation: 0,
+        sx: {
+          borderRadius: 4,
+          background: "rgba(255, 255, 255, 0.8)",
+          backdropFilter: "blur(14px)",
+          border: "1px solid rgba(255,145,0,0.25)",
+          boxShadow: "0 8px 35px rgba(255,140,0,0.25)",
+        },
+      }}
+    >
+      {/* Orange Accent Header */}
+      <Box
+        sx={{
+          p: 2.5,
+          px: 3,
+          bgcolor: "primary.main",
+          color: "white",
+          borderTopLeftRadius: "16px",
+          borderTopRightRadius: "16px",
+        }}
+      >
+        <Typography variant="h6" sx={{ fontWeight: 700 }}>
+          Edit Notes for {recipe.strMeal}
         </Typography>
+      </Box>
+
+      {/* Content */}
+      <DialogContent sx={{ mt: 2 }}>
+        <Typography variant="body2" sx={{ mb: 2, color: "text.secondary" }}>
+          Add or update your personal notes.
+        </Typography>
+
         <TextField
-          autoFocus // Automatically focus this field when the modal opens.
-          margin="dense"
-          id="notes"
-          label="Your Personal Notes"
-          type="text"
+          autoFocus
           fullWidth
-          variant="outlined"
-          multiline // This turns the TextField into a <textarea>.
-          rows={4} // Sets the default height.
-          value={notesText} // The value is controlled by our local state.
-          onChange={(e) => setNotesText(e.target.value)} // Update state on every keystroke.
+          multiline
+          rows={4}
+          label="Your Notes"
+          value={notesText}
+          onChange={(e) => setNotesText(e.target.value)}
+          sx={{
+            "& .MuiOutlinedInput-root": {
+              borderRadius: 2,
+            },
+          }}
         />
       </DialogContent>
-      <DialogActions sx={{ p: '0 24px 24px' }}>
-        <Button onClick={onClose}>Cancel</Button>
-        <Button onClick={handleSave} variant="contained">
+
+      {/* Footer */}
+      <DialogActions sx={{ px: 3, pb: 3 }}>
+        <Button onClick={onClose} sx={{ textTransform: "none" }}>
+          Cancel
+        </Button>
+
+        <Button
+          variant="contained"
+          onClick={handleSave}
+          sx={{
+            textTransform: "none",
+            fontWeight: 600,
+            px: 3,
+            py: 1,
+            background:
+              "linear-gradient(90deg, #FF8E0A 0%, #FF6D00 100%)",
+            "&:hover": {
+              background:
+                "linear-gradient(90deg, #FF9800 0%, #F57C00 100%)",
+            },
+          }}
+        >
           Save
         </Button>
       </DialogActions>

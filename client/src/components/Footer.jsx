@@ -1,38 +1,35 @@
 // src/components/Footer.jsx
 
 import React from "react";
+import { Box, Typography } from "@mui/material";
 
-/**
- * A minimal, clean footer with off-white background.
- * Removes links and branding for a professional, simple look.
- */
 const Footer = () => {
   return (
-    <footer
-      style={{
-        backgroundColor: "#f8f8f8", // soft off-white background
-        color: "#333", // dark gray text for contrast
-        padding: "1rem 2rem",
+    <Box
+      component="footer"
+      sx={{
+        mt: "auto",
+        py: 3,
+        px: 2,
         textAlign: "center",
-        borderTop: "1px solid #e0e0e0",
-        boxShadow: "0 -2px 8px rgba(0, 0, 0, 0.05)",
-        marginTop: "auto",
+        bgcolor: "background.paper",
+        borderTop: "1px solid rgba(0,0,0,0.06)",
+        boxShadow: "0 -4px 18px rgba(0,0,0,0.04)",
       }}
     >
-      <p
-        style={{
-          margin: "0.2rem 0",
+      <Typography
+        variant="body2"
+        sx={{
+          color: "text.secondary",
           fontSize: "0.95rem",
-          color: "#444",
-          letterSpacing: "0.3px",
         }}
       >
-        © {new Date().getFullYear()} — Built with by{" "}
-        <span style={{ fontWeight: 600, color: "#555" }}>
+        © {new Date().getFullYear()} RecipeHunt — Built  by{" "}
+        <span style={{ color: "#FF8E0A", fontWeight: 600 }}>
           Rizan Mohammed Ismail
         </span>
-      </p>
-    </footer>
+      </Typography>
+    </Box>
   );
 };
 

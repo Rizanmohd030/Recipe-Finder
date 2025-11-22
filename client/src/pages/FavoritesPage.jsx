@@ -1,12 +1,23 @@
+// src/pages/FavoritesPage.jsx
+
 import React, { useState, useEffect } from "react";
 import { getFavorites, removeFavorite, updateFavoriteNotes } from "../services/favoriteService";
 import { getRecipeById } from "../services/recipeService";
+
 import RecipeCard from "../components/RecipeCard";
 import LoadingSpinner from "../components/LoadingSpinner";
 import ErrorComponent from "../components/ErrorComponent";
 import NotesEditModal from "../components/NotesEditModal";
 
-import { Container, Grid, Typography, Box, Paper, Button } from "@mui/material";
+import {
+  Container,
+  Grid,
+  Typography,
+  Box,
+  Paper,
+  Button,
+  Divider,
+} from "@mui/material";
 
 const FavoritesPage = () => {
   const [favoriteRecipes, setFavoriteRecipes] = useState([]);
@@ -17,55 +28,49 @@ const FavoritesPage = () => {
   const [selectedRecipe, setSelectedRecipe] = useState(null);
 
   useEffect(() => {
-    const fetchAndProcessFavorites = async () => {
+    const fetchAndMergeFavorites = async () => {
       try {
         setLoading(true);
+        const favoriteList = await getFavorites();
 
-        const favoriteObject = await getFavorites(); 
-
-        if (favoriteObject.length === 0) {
+        if (!favoriteList.length) {
           setFavoriteRecipes([]);
           setLoading(false);
           return;
         }
 
-        // Extract array of IDs
-        const recipeIds = favoriteObject.map((fav) => fav.recipeId);
+        const ids = favoriteList.map((f) => f.recipeId);
+        const detailCalls = ids.map((id) => getRecipeById(id));
+        const fetched = await Promise.all(detailCalls);
 
-        // Fetch details from TheMealDB
-        const recipeDetailPromises = recipeIds.map((id) => getRecipeById(id));
-        const fetchedRecipeDetails = await Promise.all(recipeDetailPromises);
-
-        // Merge details + notes
-        const combinedRecipes = fetchedRecipeDetails.map((recipe) => {
-          const fav = favoriteObject.find((f) => f.recipeId === recipe.idMeal);
-
+        const merged = fetched.map((recipe) => {
+          const fav = favoriteList.find((f) => f.recipeId === recipe.idMeal);
           return {
             ...recipe,
-            notes: fav ? fav.notes : "",
+            notes: fav?.notes || "",
           };
         });
 
-        setFavoriteRecipes(combinedRecipes);
+        setFavoriteRecipes(merged);
       } catch (err) {
-        console.error("Error loading favorites:", err);
-        setError(err.message || "Failed to load favorites.");
+        console.error(err);
+        setError("Failed to load favorites. Try again.");
       } finally {
         setLoading(false);
       }
     };
 
-    fetchAndProcessFavorites();
+    fetchAndMergeFavorites();
   }, []);
 
   const handleRemoveFavorite = async (recipeId) => {
     try {
       await removeFavorite(recipeId);
-
-      setFavoriteRecipes((prev) => prev.filter((r) => r.idMeal !== recipeId));
+      setFavoriteRecipes((prev) =>
+        prev.filter((item) => item.idMeal !== recipeId)
+      );
     } catch (err) {
-      console.error("Failed to remove favorite:", err);
-      alert("Could not remove favorite. Try again.");
+      alert("Could not remove favorite.");
     }
   };
 
@@ -81,21 +86,14 @@ const FavoritesPage = () => {
 
   const handleSaveNotes = async (recipeId, newNotes) => {
     try {
-      // 1. update backend
       await updateFavoriteNotes(recipeId, newNotes);
-
-      // 2. update UI
       setFavoriteRecipes((prev) =>
-        prev.map((recipe) =>
-          recipe.idMeal === recipeId
-            ? { ...recipe, notes: newNotes }
-            : recipe
+        prev.map((r) =>
+          r.idMeal === recipeId ? { ...r, notes: newNotes } : r
         )
       );
-
       handleCloseModal();
-    } catch (err) {
-      console.error("Failed to save notes:", err);
+    } catch {
       alert("Could not save notes. Try again.");
     }
   };
@@ -104,7 +102,7 @@ const FavoritesPage = () => {
 
   if (error) {
     return (
-      <Container sx={{ py: 4 }}>
+      <Container sx={{ py: 6 }}>
         <ErrorComponent message={error} />
       </Container>
     );
@@ -112,32 +110,44 @@ const FavoritesPage = () => {
 
   return (
     <>
-      <Container sx={{ py: 4 }}>
-        <Typography variant="h3" align="center" gutterBottom>
+      <Container maxWidth="lg" sx={{ py: 6 }}>
+        <Typography
+          variant="h3"
+          align="center"
+          sx={{
+            fontWeight: 700,
+            mb: 4,
+            color: "primary.main",
+            letterSpacing: "-0.5px",
+          }}
+        >
           My Favorite Recipes
         </Typography>
 
         {favoriteRecipes.length === 0 ? (
-          <Typography variant="body1" align="center" sx={{ mt: 4 }}>
-            You haven’t saved any favorite recipes yet. Start exploring!
+          <Typography
+            variant="h6"
+            align="center"
+            sx={{ mt: 6, color: "text.secondary" }}
+          >
+            You haven't saved any favorite recipes yet.
           </Typography>
         ) : (
-          <Grid container spacing={4} sx={{ mt: 4 }}>
+          <Grid container spacing={4}>
             {favoriteRecipes.map((recipe) => (
               <Grid item key={recipe.idMeal} xs={12} sm={6} md={4} lg={3}>
                 <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
-                  <Box sx={{ flexGrow: 1 }}>
-                    <RecipeCard recipe={recipe} />
-                  </Box>
+                  <RecipeCard recipe={recipe} />
 
+                  {/* NOTES PANEL */}
                   <Paper
-                    variant="outlined"
+                    elevation={2}
                     sx={{
-                      p: 2,
                       mt: -1,
-                      borderTopLeftRadius: 0,
-                      borderTopRightRadius: 0,
-                      bgcolor: "background.default",
+                      p: 2,
+                      borderRadius: "0 0 14px 14px",
+                      backgroundColor: "white",
+                      boxShadow: "0 8px 20px rgba(0,0,0,0.05)",
                     }}
                   >
                     <Box
@@ -148,13 +158,14 @@ const FavoritesPage = () => {
                         mb: 1,
                       }}
                     >
-                      <Typography variant="subtitle2" sx={{ fontWeight: "bold" }}>
-                        My Notes:
+                      <Typography variant="subtitle2" fontWeight={700}>
+                        My Notes
                       </Typography>
 
                       <Button
                         variant="outlined"
                         size="small"
+                        sx={{ borderRadius: 2 }}
                         onClick={() => handleOpenModal(recipe)}
                       >
                         Edit
@@ -164,19 +175,43 @@ const FavoritesPage = () => {
                     {recipe.notes ? (
                       <Typography
                         variant="body2"
-                        sx={{ fontStyle: "italic", whiteSpace: "pre-wrap" }}
+                        sx={{
+                          fontStyle: "italic",
+                          color: "text.primary",
+                          whiteSpace: "pre-wrap",
+                        }}
                       >
                         {recipe.notes}
                       </Typography>
                     ) : (
                       <Typography
                         variant="body2"
-                        color="text.secondary"
-                        sx={{ fontStyle: "italic" }}
+                        sx={{
+                          color: "text.secondary",
+                          fontStyle: "italic",
+                        }}
                       >
                         No notes yet. Add one!
                       </Typography>
                     )}
+
+                    <Divider sx={{ my: 1.5 }} />
+
+                    <Button
+                      fullWidth
+                      color="error"
+                      variant="text"
+                      onClick={() => handleRemoveFavorite(recipe.idMeal)}
+                      sx={{
+                        fontWeight: 600,
+                        textTransform: "none",
+                        "&:hover": {
+                          backgroundColor: "rgba(255,0,0,0.06)",
+                        },
+                      }}
+                    >
+                      Remove
+                    </Button>
                   </Paper>
                 </Box>
               </Grid>
@@ -185,7 +220,6 @@ const FavoritesPage = () => {
         )}
       </Container>
 
-      {/* Render modal only when a recipe is selected */}
       {selectedRecipe && (
         <NotesEditModal
           open={isModalOpen}
