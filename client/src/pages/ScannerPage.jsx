@@ -81,18 +81,20 @@ export default function ScannerPage() {
     setLoading(true);
 
     try {
-      const res = await fetch("/api/vision/identify", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ image: base64 }),
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/api/vision/identify`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ image: base64 }),
+        }
+      );
 
       const data = await res.json();
       console.log("Detected Food:", data);
 
       setResult(data.foodName);
       setRecipes(data.recipes || []);
-
     } catch (err) {
       console.error("Process error:", err);
     }
@@ -106,32 +108,27 @@ export default function ScannerPage() {
         Scan Food
       </Typography>
 
-      {/* CAMERA + BUTTON BLOCK (centered together) */}
       <Box
         sx={{
           display: "flex",
           flexDirection: "column",
-          alignItems: "center",   // centers camera + buttons as ONE group
+          alignItems: "center",
           justifyContent: "center",
-          width: "100%",
           mt: 2,
         }}
       >
-
-        {/* CAMERA VIEW */}
         {!imagePreview && (
           <video
             ref={videoRef}
             style={{
-              width: "60%",          // smaller camera
-              maxWidth: "350px",     // limit width
+              width: "60%",
+              maxWidth: "350px",
               borderRadius: "12px",
               boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
             }}
           />
         )}
 
-        {/* IMAGE PREVIEW */}
         {imagePreview && (
           <img
             src={imagePreview}
@@ -145,32 +142,26 @@ export default function ScannerPage() {
           />
         )}
 
-        {/* BUTTONS BELOW CAMERA */}
         <Box
           sx={{
-            width: "60%",            // EXACT same width as camera
+            width: "60%",
             maxWidth: "350px",
             mt: 1.5,
             display: "flex",
             flexDirection: "column",
             gap: 1.2,
-            alignItems: "center",     // center buttons relative to camera
+            alignItems: "center",
           }}
         >
-
           <Button
             variant="contained"
             onClick={capturePhoto}
             sx={{
-              width: "100%",          // match camera width
+              width: "100%",
               py: 1,
-              fontSize: "0.95rem",
               fontWeight: 700,
               borderRadius: 2,
               background: "linear-gradient(90deg, #FF8E0A 0%, #FF6D00 100%)",
-              "&:hover": {
-                background: "linear-gradient(90deg, #FF9800 0%, #F57C00 100%)",
-              },
             }}
           >
             Capture from Camera
@@ -188,26 +179,17 @@ export default function ScannerPage() {
             variant="outlined"
             onClick={() => inputRef.current.click()}
             sx={{
-              width: "100%",         // match camera width
+              width: "100%",
               py: 1,
-              fontSize: "0.95rem",
               fontWeight: 700,
               borderRadius: 2,
-              borderColor: "primary.main",
-              color: "primary.main",
-              "&:hover": {
-                backgroundColor: "rgba(255,145,0,0.08)",
-                borderColor: "primary.dark",
-              },
             }}
           >
             Upload a Photo Instead
           </Button>
-
         </Box>
       </Box>
 
-      {/* LOADING */}
       {loading && (
         <Box sx={{ mt: 3 }}>
           <CircularProgress size={40} />
@@ -215,14 +197,12 @@ export default function ScannerPage() {
         </Box>
       )}
 
-      {/* RESULT */}
       {result && (
         <Typography sx={{ mt: 3, fontSize: "1.2rem", fontWeight: 600 }}>
           Detected: {result}
         </Typography>
       )}
 
-      {/* RECIPE RESULTS */}
       <Box
         sx={{
           mt: 3,
