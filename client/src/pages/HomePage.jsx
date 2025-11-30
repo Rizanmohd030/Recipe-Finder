@@ -1,8 +1,9 @@
 // src/pages/HomePage.jsx
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { searchRecipes } from "../services/recipeService";
 
+import { useLocation } from "react-router-dom";
 import SearchBar from "../components/SearchBar";
 import RecipeCard from "../components/RecipeCard";
 import LoadingSpinner from "../components/LoadingSpinner";
@@ -23,16 +24,29 @@ const HomePage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const handleSearch = async (e) => {
-    e.preventDefault();
-    if (!query.trim()) return;
+  // 💡 NEW: Read ?search=egg from URL
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const searchQuery = params.get("search");
+
+  // 💡 NEW: Trigger search when URL changes
+  useEffect(() => {
+    if (searchQuery) {
+      setQuery(searchQuery);
+      runSearch(searchQuery);
+    }
+  }, [searchQuery]);
+
+  // Extracted search logic to reuse from URL + manual search
+  const runSearch = async (term) => {
+    if (!term.trim()) return;
 
     setIsLoading(true);
     setSearched(true);
     setError(null);
 
     try {
-      const results = await searchRecipes(query);
+      const results = await searchRecipes(term);
       setRecipes(results || []);
     } catch (err) {
       setError("Failed to fetch recipes. Please try again later.");
@@ -40,6 +54,12 @@ const HomePage = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  // OLD search button (still works)
+  const handleSearch = (e) => {
+    e.preventDefault();
+    runSearch(query);
   };
 
   return (
