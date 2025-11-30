@@ -24,9 +24,20 @@ const Footer = () => {
           fontSize: "0.95rem",
         }}
       >
-        © {new Date().getFullYear()} RecipeHunt — Built  by{" "}
+        © {new Date().getFullYear()} RecipeHunt — Built by{" "}
         <span style={{ color: "#FF8E0A", fontWeight: 600 }}>
-          Rizan Mohammed Ismail
+          <a
+            href="https://www.linkedin.com/in/rizan-mohammed-ismail-b059b7269/"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              color: "#FF8E0A",
+              fontWeight: 600,
+              textDecoration: "none",
+            }}
+          >
+            Rizan Mohammed Ismail
+          </a>
         </span>
       </Typography>
     </Box>

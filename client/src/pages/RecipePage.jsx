@@ -17,6 +17,7 @@ import {
   Stack,
   Alert,
   Paper,
+  Divider,
 } from "@mui/material";
 
 const RecipePage = () => {
@@ -74,144 +75,140 @@ const RecipePage = () => {
     for (let i = 1; i <= 20; i++) {
       const ing = recipe[`strIngredient${i}`];
       const measure = recipe[`strMeasure${i}`];
-      if (ing) out.push(`${ing} — ${measure}`);
+      if (ing) out.push({ ing, measure });
     }
     return out;
   };
 
   return (
-    <Container maxWidth="lg" sx={{ py: 5 }}>
-      {/* Title */}
-      <Typography
-        variant="h3"
-        align="center"
-        gutterBottom
+    <Box>
+
+      {/* 🔥 HERO IMAGE SECTION */}
+      <Box
         sx={{
-          fontWeight: 800,
-          mb: 5,
-          color: "#f29b00",
-          letterSpacing: "-0.5px",
+          position: "relative",
+          height: { xs: 260, md: 380 },
+          overflow: "hidden",
         }}
       >
-        {recipe.strMeal}
-      </Typography>
+        <Box
+          component="img"
+          src={recipe.strMealThumb}
+          alt={recipe.strMeal}
+          sx={{
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            filter: "brightness(75%)",
+          }}
+        />
 
-      <Grid container spacing={4}>
-        {/* LEFT — Image */}
-        <Grid item xs={12} md={5}>
-          <Paper
-            elevation={4}
+        {/* TITLE OVER IMAGE */}
+        <Typography
+          variant="h3"
+          sx={{
+            position: "absolute",
+            bottom: 25,
+            left: 25,
+            color: "white",
+            fontWeight: 900,
+            textShadow: "0 4px 12px rgba(0,0,0,0.4)",
+            maxWidth: "80%",
+          }}
+        >
+          {recipe.strMeal}
+        </Typography>
+      </Box>
+
+      {/* MAIN CONTAINER */}
+      <Container maxWidth="md" sx={{ py: 5 }}>
+
+        {/* CATEGORY TAG */}
+        <Box
+          sx={{
+            background: "#fff7e6",
+            borderLeft: "5px solid #ff9800",
+            p: 2,
+            mb: 3,
+            borderRadius: 2,
+          }}
+        >
+          <Typography
+            variant="subtitle1"
+            sx={{ fontWeight: 600, color: "#6d4c41" }}
+          >
+            Category: {recipe.strCategory} • Origin: {recipe.strArea}
+          </Typography>
+        </Box>
+
+        {/* FAVORITE BUTTON */}
+        {user && (
+          <Button
+            onClick={handleSaveToFavorites}
+            size="large"
             sx={{
-              borderRadius: 4,
-              overflow: "hidden",
+              mb: 3,
+              px: 4,
+              py: 1.5,
+              borderRadius: 3,
+              fontWeight: 700,
+              color: "white",
+              background: "linear-gradient(90deg, #ff9800, #f57c00)",
+              boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
+              "&:hover": {
+                background: "linear-gradient(90deg, #fb8c00, #ef6c00)",
+              },
             }}
           >
-            <Box
-              component="img"
-              src={recipe.strMealThumb}
-              alt={recipe.strMeal}
-              sx={{
-                width: "100%",
-                objectFit: "cover",
-                height: 350,
-              }}
-            />
-          </Paper>
-        </Grid>
+            ⭐ Save to Favorites
+          </Button>
+        )}
 
-        {/* RIGHT — Content */}
-        <Grid item xs={12} md={7}>
-          <Stack spacing={3}>
-            <Typography
-              variant="subtitle1"
-              sx={{
-                color: "#555",
-                fontWeight: 600,
-                background: "#fff7ea",
-                px: 2,
-                py: 1,
-                borderRadius: 2,
-                display: "inline-block",
-              }}
-            >
-              Category: {recipe.strCategory} • Area: {recipe.strArea}
-            </Typography>
+        {feedback.message && (
+          <Alert severity={feedback.type} sx={{ mb: 3 }}>
+            {feedback.message}
+          </Alert>
+        )}
 
-            {/* Favorite Button */}
-            {user && (
-              <Button
-                onClick={handleSaveToFavorites}
-                size="large"
-                sx={{
-                  width: "fit-content",
-                  px: 4,
-                  py: 1.5,
-                  borderRadius: 3,
-                  fontWeight: 700,
-                  backgroundColor: "#ff8c00",
-                  color: "white",
-                  boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
-                  "&:hover": {
-                    backgroundColor: "#e57a00",
-                    transform: "translateY(-2px)",
-                  },
-                }}
-              >
-                Save to Favorites ⭐
-              </Button>
-            )}
+        {/* INGREDIENTS */}
+        <Paper sx={{ p: 3, borderRadius: 3, mb: 4 }} elevation={1}>
+          <Typography variant="h5" sx={{ fontWeight: 700, mb: 2 }}>
+            🧂 Ingredients
+          </Typography>
 
-            {feedback.message && (
-              <Alert severity={feedback.type}>{feedback.message}</Alert>
-            )}
-
-            {/* Ingredients */}
-            <Paper
-              elevation={2}
-              sx={{
-                p: 3,
-                borderRadius: 3,
-                backgroundColor: "#fff3e0",
-              }}
-            >
-              <Typography variant="h5" sx={{ fontWeight: 700, mb: 2 }}>
-                Ingredients
-              </Typography>
-
-              {getIngredients().map((ing, i) => (
-                <Typography key={i} variant="body1" sx={{ mb: 0.5 }}>
-                  • {ing}
+          <Grid container spacing={1}>
+            {getIngredients().map((item, i) => (
+              <Grid item xs={12} sm={6} key={i}>
+                <Typography sx={{ fontSize: "1rem", color: "#5d4037" }}>
+                  • <strong>{item.ing}</strong> — {item.measure}
                 </Typography>
-              ))}
-            </Paper>
+              </Grid>
+            ))}
+          </Grid>
+        </Paper>
 
-            {/* Instructions */}
-            <Paper
-              elevation={2}
-              sx={{
-                p: 3,
-                borderRadius: 3,
-                backgroundColor: "#fff",
-              }}
-            >
-              <Typography variant="h5" sx={{ fontWeight: 700, mb: 2 }}>
-                Instructions
-              </Typography>
+        {/* INSTRUCTIONS */}
+        <Paper sx={{ p: 3, borderRadius: 3 }} elevation={1}>
+          <Typography variant="h5" sx={{ fontWeight: 700, mb: 2 }}>
+            👨‍🍳 Instructions
+          </Typography>
 
-              <Typography
-                variant="body1"
-                sx={{
-                  lineHeight: 1.8,
-                  whiteSpace: "pre-wrap",
-                }}
-              >
-                {recipe.strInstructions}
-              </Typography>
-            </Paper>
-          </Stack>
-        </Grid>
-      </Grid>
-    </Container>
+          <Divider sx={{ mb: 2 }} />
+
+          <Typography
+            variant="body1"
+            sx={{
+              lineHeight: 1.8,
+              whiteSpace: "pre-line",
+              color: "#4e342e",
+            }}
+          >
+            {recipe.strInstructions}
+          </Typography>
+        </Paper>
+
+      </Container>
+    </Box>
   );
 };
 
