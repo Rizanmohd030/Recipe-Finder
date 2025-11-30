@@ -11,6 +11,7 @@ export default function ScannerPage() {
   const videoRef = useRef(null);
   const inputRef = useRef(null);
   const streamRef = useRef(null);
+
   const capturingRef = useRef(false);
 
   // Start camera on mount
@@ -22,12 +23,19 @@ export default function ScannerPage() {
   const startCamera = async () => {
     try {
       streamRef.current = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: "environment" },
+        video: {
+          facingMode: { ideal: "environment" }, 
+          width: { ideal: 1280 },
+          height: { ideal: 720 },
+        },
+        audio: false,
       });
 
       if (videoRef.current) {
         videoRef.current.srcObject = streamRef.current;
-        await videoRef.current.play().catch(() => {});
+        videoRef.current.setAttribute("playsinline", true); // iPhone fix
+        videoRef.current.muted = true; // mobile autoplay fix
+        await videoRef.current.play();
       }
     } catch (err) {
       console.error("Camera error:", err);
@@ -59,7 +67,7 @@ export default function ScannerPage() {
     capturingRef.current = false;
   };
 
-  // UPLOAD IMAGE
+  // UPLOAD PHOTO
   const handleUpload = (e) => {
     if (capturingRef.current) return;
     capturingRef.current = true;
@@ -117,35 +125,42 @@ export default function ScannerPage() {
           mt: 2,
         }}
       >
+        {/* Live Camera Preview */}
         {!imagePreview && (
           <video
             ref={videoRef}
+            autoPlay
+            playsInline
+            muted
             style={{
-              width: "60%",
-              maxWidth: "350px",
+              width: "90%",
+              maxWidth: "400px",
               borderRadius: "12px",
               boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+              background: "black",
             }}
           />
         )}
 
+        {/* Photo Preview */}
         {imagePreview && (
           <img
             src={imagePreview}
             style={{
-              width: "60%",
-              maxWidth: "350px",
+              width: "90%",
+              maxWidth: "400px",
               borderRadius: "12px",
-              boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
               marginBottom: "10px",
+              boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
             }}
           />
         )}
 
+        {/* Buttons */}
         <Box
           sx={{
-            width: "60%",
-            maxWidth: "350px",
+            width: "90%",
+            maxWidth: "400px",
             mt: 1.5,
             display: "flex",
             flexDirection: "column",
@@ -190,6 +205,7 @@ export default function ScannerPage() {
         </Box>
       </Box>
 
+      {/* Loading */}
       {loading && (
         <Box sx={{ mt: 3 }}>
           <CircularProgress size={40} />
@@ -197,12 +213,14 @@ export default function ScannerPage() {
         </Box>
       )}
 
+      {/* Detected Food */}
       {result && (
         <Typography sx={{ mt: 3, fontSize: "1.2rem", fontWeight: 600 }}>
           Detected: {result}
         </Typography>
       )}
 
+      {/* Recipes */}
       <Box
         sx={{
           mt: 3,
