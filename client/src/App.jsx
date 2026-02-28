@@ -1,5 +1,6 @@
 // src/App.jsx
 import { Routes, Route } from "react-router-dom";
+import { Analytics } from "@vercel/analytics/react";
 import Navbar from "./components/Navbar";
 import FavoritesPage from "./pages/FavoritesPage";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -57,6 +58,7 @@ function App() {
       </Box>
 
       <Footer />
+      <Analytics />
     </Box>
   );
 }
