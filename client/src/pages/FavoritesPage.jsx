@@ -69,7 +69,7 @@ const FavoritesPage = () => {
       setFavoriteRecipes((prev) =>
         prev.filter((item) => item.idMeal !== recipeId)
       );
-    } catch (err) {
+    } catch {
       alert("Could not remove favorite.");
     }
   };

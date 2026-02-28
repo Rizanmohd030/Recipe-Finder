@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { login as loginService } from "../services/authService";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../context/authContext";
 
 import {
   Container,

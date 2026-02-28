@@ -1,14 +1,10 @@
-import React, { createContext, useState, useEffect, useContext } from "react";
-
-// Create our global auth context
-export const AuthContext = createContext(null);
-
-// Custom hook for easy usage: const { user, login, logout } = useAuth()
-export const useAuth = () => useContext(AuthContext);
+import React, { useState, useEffect } from "react";
+import { AuthContext } from "./authContext";
 
 export const AuthProvider = ({ children }) => {
   // "user" holds all logged-in user data
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   /**
    * ----------------------------------------------------
@@ -26,6 +22,8 @@ export const AuthProvider = ({ children }) => {
       // restore user object
       setUser(JSON.parse(storedUser));
     }
+
+    setLoading(false);
   }, []);
 
   /**
@@ -66,7 +64,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
