@@ -14,6 +14,15 @@ import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 
 // const theme = createTheme({});
+
+if (import.meta.env.PROD && !document.querySelector('script[data-vercel-insights]')) {
+  const insightsScript = document.createElement('script');
+  insightsScript.defer = true;
+  insightsScript.src = '/_vercel/insights/script.js';
+  insightsScript.setAttribute('data-vercel-insights', 'true');
+  document.head.appendChild(insightsScript);
+}
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
 
