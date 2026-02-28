@@ -1,9 +1,9 @@
 // src/pages/RecipePage.jsx
 
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getRecipeById } from "../services/recipeService";
-import { AuthContext } from "../context/AuthContext";
+import { useAuth } from "../context/authContext";
 import { addFavorite } from "../services/favoriteService";
 import LoadingSpinner from "../components/LoadingSpinner";
 import ErrorComponent from "../components/ErrorComponent";
@@ -14,7 +14,6 @@ import {
   Box,
   Typography,
   Button,
-  Stack,
   Alert,
   Paper,
   Divider,
@@ -25,7 +24,7 @@ const RecipePage = () => {
   const [recipe, setRecipe] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { user } = useContext(AuthContext);
+  const { user } = useAuth();
   const [feedback, setFeedback] = useState({ message: "", type: "" });
 
   useEffect(() => {
@@ -39,7 +38,7 @@ const RecipePage = () => {
         } else {
           setRecipe(data);
         }
-      } catch (err) {
+      } catch {
         setError("Failed to load recipe.");
       } finally {
         setLoading(false);
@@ -55,7 +54,7 @@ const RecipePage = () => {
     try {
       const res = await addFavorite(recipe.idMeal);
       setFeedback({ message: res.message || "Saved to favorites!", type: "success" });
-    } catch (err) {
+    } catch {
       setFeedback({ message: "Failed to save favorite.", type: "error" });
     }
   };

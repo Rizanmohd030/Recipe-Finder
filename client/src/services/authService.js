@@ -13,8 +13,8 @@ export const register = async (userData) => {
     const response = await axios.post(`${API_URL}/register`, userData);
     return response.data;
   } catch (error) {
-    console.error('Registration failed:', error.response.data);
-    throw error.response.data;
+    console.error('Registration failed:', error.response?.data || error.message);
+    throw error.response?.data || { message: 'Registration failed' };
   }
 };
 
@@ -29,7 +29,7 @@ export const login = async (userData) => {
     const response = await axios.post(`${API_URL}/login`, userData);
     return response.data;
   } catch (error) {
-    console.error('Login failed:', error.response.data);
-    throw error.response.data;
+    console.error('Login failed:', error.response?.data || error.message);
+    throw error.response?.data || { message: 'Login failed' };
   }
 };

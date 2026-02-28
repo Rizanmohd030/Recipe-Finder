@@ -81,6 +81,7 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           backgroundClip: "padding-box",
+          borderRadius: 14,
         },
       },
     },
@@ -145,15 +146,6 @@ const theme = createTheme({
         root: {
           borderTopLeftRadius: 16,
           borderTopRightRadius: 16,
-        },
-      },
-    },
-
-    // Paper for the notes panel, modal content, etc.
-    MuiPaper: {
-      styleOverrides: {
-        root: {
-          borderRadius: 14,
         },
       },
     },

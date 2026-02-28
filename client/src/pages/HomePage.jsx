@@ -48,7 +48,7 @@ const HomePage = () => {
     try {
       const results = await searchRecipes(term);
       setRecipes(results || []);
-    } catch (err) {
+    } catch {
       setError("Failed to fetch recipes. Please try again later.");
       setRecipes([]);
     } finally {

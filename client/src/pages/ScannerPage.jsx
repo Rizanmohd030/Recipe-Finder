@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import { Box, Button, Typography, CircularProgress } from "@mui/material";
 import RecipeCard from "../components/RecipeCard";
 
@@ -13,58 +13,97 @@ export default function ScannerPage() {
   const streamRef = useRef(null);
 
   const capturingRef = useRef(false);
+  const isMountedRef = useRef(false);
+  const startRequestRef = useRef(0);
 
-  // Start camera on mount
-  useEffect(() => {
-    startCamera();
-    return () => stopCamera();
+  const stopCamera = useCallback(() => {
+    if (videoRef.current) {
+      videoRef.current.pause();
+      videoRef.current.srcObject = null;
+    }
+
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach((t) => t.stop());
+      streamRef.current = null;
+    }
   }, []);
 
-  const startCamera = async () => {
+  const startCamera = useCallback(async () => {
+    const requestId = ++startRequestRef.current;
+
     try {
-      streamRef.current = await navigator.mediaDevices.getUserMedia({
+      const stream = await navigator.mediaDevices.getUserMedia({
         video: {
-          facingMode: { ideal: "environment" }, 
+          facingMode: { ideal: "environment" },
           width: { ideal: 1280 },
           height: { ideal: 720 },
         },
         audio: false,
       });
 
+      if (!isMountedRef.current || requestId !== startRequestRef.current) {
+        stream.getTracks().forEach((t) => t.stop());
+        return;
+      }
+
+      streamRef.current = stream;
+
       if (videoRef.current) {
-        videoRef.current.srcObject = streamRef.current;
+        videoRef.current.srcObject = stream;
         videoRef.current.setAttribute("playsinline", true); // iPhone fix
         videoRef.current.muted = true; // mobile autoplay fix
-        await videoRef.current.play();
+
+        try {
+          await videoRef.current.play();
+        } catch (err) {
+          // This can happen during rapid remount/reload in React strict mode.
+          if (err?.name !== "AbortError") {
+            console.error("Camera play error:", err);
+          }
+        }
       }
     } catch (err) {
       console.error("Camera error:", err);
     }
-  };
+  }, []);
 
-  const stopCamera = () => {
-    if (streamRef.current) {
-      streamRef.current.getTracks().forEach((t) => t.stop());
-    }
-  };
+  // Start camera on mount
+  useEffect(() => {
+    isMountedRef.current = true;
+    startCamera();
+
+    return () => {
+      isMountedRef.current = false;
+      stopCamera();
+    };
+  }, [startCamera, stopCamera]);
 
   // CAPTURE PHOTO
   const capturePhoto = async () => {
     if (capturingRef.current) return;
     capturingRef.current = true;
 
-    const canvas = document.createElement("canvas");
-    canvas.width = videoRef.current.videoWidth;
-    canvas.height = videoRef.current.videoHeight;
+    try {
+      if (!videoRef.current || !videoRef.current.videoWidth || !videoRef.current.videoHeight) {
+        return;
+      }
 
-    const ctx = canvas.getContext("2d");
-    ctx.drawImage(videoRef.current, 0, 0);
+      const canvas = document.createElement("canvas");
+      canvas.width = videoRef.current.videoWidth;
+      canvas.height = videoRef.current.videoHeight;
 
-    const base64 = canvas.toDataURL("image/jpeg");
-    setImagePreview(base64);
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return;
 
-    await processImage(base64);
-    capturingRef.current = false;
+      ctx.drawImage(videoRef.current, 0, 0);
+
+      const base64 = canvas.toDataURL("image/jpeg");
+      setImagePreview(base64);
+
+      await processImage(base64);
+    } finally {
+      capturingRef.current = false;
+    }
   };
 
   // UPLOAD PHOTO
@@ -73,15 +112,25 @@ export default function ScannerPage() {
     capturingRef.current = true;
 
     const file = e.target.files?.[0];
-    if (!file) return;
+    if (!file) {
+      capturingRef.current = false;
+      return;
+    }
 
     const reader = new FileReader();
     reader.onloadend = async () => {
-      setImagePreview(reader.result);
-      await processImage(reader.result);
+      try {
+        setImagePreview(reader.result);
+        await processImage(reader.result);
+      } finally {
+        capturingRef.current = false;
+      }
+    };
+    reader.onerror = () => {
       capturingRef.current = false;
     };
     reader.readAsDataURL(file);
+    e.target.value = "";
   };
 
   // SEND TO BACKEND
@@ -146,6 +195,7 @@ export default function ScannerPage() {
         {imagePreview && (
           <img
             src={imagePreview}
+            alt="Captured food preview"
             style={{
               width: "90%",
               maxWidth: "400px",
