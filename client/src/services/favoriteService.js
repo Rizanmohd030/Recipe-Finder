@@ -27,7 +27,7 @@ export const addFavorite = async (recipeId) => {
     const response = await axios.post(API_URL, body, config);
     return response.data;
   } catch (error) {
-    throw error.response.data || new Error('An unknown error occurred.');
+    throw error.response?.data || new Error('An unknown error occurred.');
   }
 };
 
@@ -48,7 +48,7 @@ export const getFavorites = async () => {
     const response = await axios.get(API_URL, config);
     return response.data;
   } catch (error) {
-    throw error.response.data || new Error('Failed to fetch favorites.');
+    throw error.response?.data || new Error('Failed to fetch favorites.');
   }
 };
 
@@ -69,7 +69,7 @@ export const removeFavorite = async (recipeId) => {
     const response = await axios.delete(`${API_URL}/${recipeId}`, config);
     return response.data;
   } catch (error) {
-    throw error.response.data || new Error('Failed to remove favorite.');
+    throw error.response?.data || new Error('Failed to remove favorite.');
   }
 };
 
