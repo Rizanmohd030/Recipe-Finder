@@ -43,13 +43,16 @@ const FavoritesPage = () => {
         const detailCalls = ids.map((id) => getRecipeById(id));
         const fetched = await Promise.all(detailCalls);
 
-        const merged = fetched.map((recipe) => {
-          const fav = favoriteList.find((f) => f.recipeId === recipe.idMeal);
-          return {
-            ...recipe,
-            notes: fav?.notes || "",
-          };
-        });
+        const merged = favoriteList
+          .map((fav) => {
+            const recipe = fetched.find((item) => item && item.idMeal === fav.recipeId);
+            if (!recipe) return null;
+            return {
+              ...recipe,
+              notes: fav.notes || "",
+            };
+          })
+          .filter(Boolean);
 
         setFavoriteRecipes(merged);
       } catch (err) {

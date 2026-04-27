@@ -3,7 +3,7 @@ const express = require('express');
 const colors = require('colors');
 const cors =require('cors');
 const connectDB = require('./config/db');
-// const {notFound,errorhandler} = require('./middleware/errorMiddleware');
+const { notFound, errorHandler } = require('./middleware/errorMiddleware');
 
 // dotenv.config();
 
@@ -26,8 +26,8 @@ app.use('/api/favorites', require('./routes/favoriteRoutes'));
 app.use('/api/vision', require('./routes/visionRoutes'));
 
 
-// app.use(notFound);
-// app.use(errorHandler);
+app.use(notFound);
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 

@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { Box, Button, Typography, CircularProgress } from "@mui/material";
 import RecipeCard from "../components/RecipeCard";
+import { API_BASE_URL } from "../services/apiBase";
 
 export default function ScannerPage() {
   const [imagePreview, setImagePreview] = useState(null);
@@ -139,7 +140,7 @@ export default function ScannerPage() {
 
     try {
       const res = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}/api/vision/identify`,
+        `${API_BASE_URL}/api/vision/identify`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

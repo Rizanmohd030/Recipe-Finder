@@ -49,7 +49,7 @@ router.put('/:recipeId',protect,async(req,res)=>{
       return res.status(400).json({ message: 'Notes field is required' });
     }
       const updatedUser = await User.findOneAndUpdate(
-              { _id: req.user.id, 'favorites.recipeId': recipeId },
+              { _id: req.user._id, 'favorites.recipeId': recipeId },
                     { $set: { 'favorites.$.notes': notes } },
                           { new: true }
             );

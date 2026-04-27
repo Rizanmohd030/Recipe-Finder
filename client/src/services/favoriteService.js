@@ -1,6 +1,7 @@
 import axios from 'axios';
+import { API_BASE_URL } from './apiBase';
 
-const API_URL = `${import.meta.env.VITE_BACKEND_URL}/api/favorites`;
+const API_URL = `${API_BASE_URL}/api/favorites`;
 
 /**
  * Sends a request to the backend to add a recipe to the user's favorites.

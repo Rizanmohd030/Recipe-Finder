@@ -51,7 +51,8 @@ const registerUser = async(req,res)=>{
 
 }
 }catch(error){
-        res.status(res.statusCode || 500).json({ message: error.message });
+        const statusCode = res.statusCode === 200 ? 500 : res.statusCode;
+        res.status(statusCode).json({ message: error.message });
 
 }
 };
@@ -80,7 +81,8 @@ const loginUser =async (req,res)=>{
             throw new Error('Invalid credentials');
         }
     }catch(error){
-        res.status(res.statusCode || 500).json({ message: error.message });
+        const statusCode = res.statusCode === 200 ? 500 : res.statusCode;
+        res.status(statusCode).json({ message: error.message });
 }
 };
 

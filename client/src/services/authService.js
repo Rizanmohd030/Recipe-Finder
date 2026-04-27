@@ -1,6 +1,7 @@
 import axios from 'axios';
+import { API_BASE_URL } from './apiBase';
 
-const API_URL = import.meta.env.VITE_BACKEND_URL  + '/api/users';
+const API_URL = `${API_BASE_URL}/api/users`;
 
 /**
  * Sends a POST request to the backend to register a new user.
