@@ -1,9 +1,10 @@
 // src/pages/LoginPage.jsx
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { login as loginService } from "../services/authService";
 import { useAuth } from "../context/authContext";
+import { API_BASE_URL } from "../services/apiBase";
 
 import {
   Container,
@@ -18,9 +19,23 @@ import {
 const LoginPage = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [error, setError] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { login } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 3000);
+
+    fetch(`${API_BASE_URL || ""}/api/health`, { signal: controller.signal })
+      .catch(() => {});
+
+    return () => {
+      clearTimeout(timeoutId);
+      controller.abort();
+    };
+  }, []);
 
   const handleChange = (e) => {
     if (error) setError(null);
@@ -33,6 +48,7 @@ const LoginPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
+    setIsSubmitting(true);
 
     try {
       const data = await loginService(formData);
@@ -44,6 +60,8 @@ const LoginPage = () => {
       }
     } catch (err) {
       setError(err.message || "Login failed. Try again.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -138,6 +156,7 @@ const LoginPage = () => {
             type="submit"
             variant="contained"
             size="large"
+            disabled={isSubmitting}
             sx={{
               mt: 3,
               py: 1.4,
@@ -151,7 +170,7 @@ const LoginPage = () => {
               letterSpacing: "0.5px",
             }}
           >
-            Log In
+            {isSubmitting ? "Logging in..." : "Log In"}
           </Button>
         </Box>
       </Paper>
