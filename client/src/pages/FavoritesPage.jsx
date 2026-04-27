@@ -123,6 +123,8 @@ const FavoritesPage = () => {
     }
   };
 
+  const notesCount = favoriteRecipes.filter((recipe) => recipe.notes && recipe.notes.trim()).length;
+
   if (loading) return <LoadingSpinner />;
 
   if (error) {
@@ -136,18 +138,90 @@ const FavoritesPage = () => {
   return (
     <>
       <Container maxWidth="lg" sx={{ py: 6 }}>
-        <Typography
-          variant="h3"
-          align="center"
+        <Paper
+          elevation={0}
           sx={{
-            fontWeight: 700,
+            p: { xs: 3, md: 4 },
             mb: 4,
-            color: "primary.main",
-            letterSpacing: "-0.5px",
+            borderRadius: 4,
+            background: "linear-gradient(135deg, #fff7e8 0%, #ffffff 100%)",
+            border: "1px solid rgba(255,145,0,0.18)",
           }}
         >
-          My Favorite Recipes
-        </Typography>
+          <Box
+            sx={{
+              display: "inline-flex",
+              alignItems: "center",
+              px: 1.2,
+              py: 0.4,
+              mb: 2,
+              bgcolor: "#ff5a00",
+              color: "white",
+              fontSize: "0.68rem",
+              fontWeight: 800,
+              letterSpacing: "0.14em",
+              borderRadius: 0.5,
+            }}
+          >
+            MY COLLECTION
+          </Box>
+
+          <Typography
+            variant="h3"
+            sx={{
+              fontWeight: 800,
+              mb: 1.2,
+              color: "#161616",
+              letterSpacing: "-0.5px",
+              fontSize: { xs: "2.2rem", md: "3.2rem" },
+            }}
+          >
+            My Favorite Recipes
+          </Typography>
+
+          <Typography
+            variant="body1"
+            sx={{ color: "text.secondary", maxWidth: 650, lineHeight: 1.8 }}
+          >
+            Keep your saved recipes and notes in one place with the same RecipeHunt style you see across the app.
+          </Typography>
+
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns: { xs: "1fr", sm: "repeat(3, 1fr)" },
+              gap: 1.5,
+              mt: 3,
+            }}
+          >
+            <Paper elevation={0} sx={{ p: 2, borderRadius: 3, border: "1px solid rgba(0,0,0,0.06)" }}>
+              <Typography variant="caption" sx={{ color: "primary.main", fontWeight: 800, letterSpacing: "0.14em", textTransform: "uppercase" }}>
+                Saved recipes
+              </Typography>
+              <Typography variant="h5" sx={{ mt: 0.7, fontWeight: 800 }}>
+                {favoriteRecipes.length}
+              </Typography>
+            </Paper>
+
+            <Paper elevation={0} sx={{ p: 2, borderRadius: 3, border: "1px solid rgba(0,0,0,0.06)" }}>
+              <Typography variant="caption" sx={{ color: "primary.main", fontWeight: 800, letterSpacing: "0.14em", textTransform: "uppercase" }}>
+                Recipes with notes
+              </Typography>
+              <Typography variant="h5" sx={{ mt: 0.7, fontWeight: 800 }}>
+                {notesCount}
+              </Typography>
+            </Paper>
+
+            <Paper elevation={0} sx={{ p: 2, borderRadius: 3, border: "1px solid rgba(0,0,0,0.06)" }}>
+              <Typography variant="caption" sx={{ color: "primary.main", fontWeight: 800, letterSpacing: "0.14em", textTransform: "uppercase" }}>
+                Quick access
+              </Typography>
+              <Typography variant="h5" sx={{ mt: 0.7, fontWeight: 800 }}>
+                Edit / Remove
+              </Typography>
+            </Paper>
+          </Box>
+        </Paper>
 
         {favoriteRecipes.length === 0 ? (
           <Typography
@@ -158,7 +232,7 @@ const FavoritesPage = () => {
             You haven't saved any favorite recipes yet.
           </Typography>
         ) : (
-          <Grid container spacing={4}>
+          <Grid container spacing={3}>
             {favoriteRecipes.map((recipe) => (
               <Grid item key={recipe.idMeal} xs={12} sm={6} md={4} lg={3}>
                 <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
@@ -166,12 +240,12 @@ const FavoritesPage = () => {
                     <RecipeCard recipe={recipe} />
                   ) : recipe.isLoading ? (
                     <Paper
-                      elevation={2}
+                      elevation={0}
                       sx={{
                         borderRadius: 4,
                         overflow: "hidden",
-                        backgroundColor: "background.paper",
-                        boxShadow: "0 6px 18px rgba(16, 24, 40, 0.06)",
+                        backgroundColor: "#fffaf4",
+                        border: "1px solid rgba(255,145,0,0.12)",
                       }}
                     >
                       <Skeleton variant="rectangular" height={200} />
@@ -181,12 +255,12 @@ const FavoritesPage = () => {
                     </Paper>
                   ) : (
                     <Paper
-                      elevation={2}
+                      elevation={0}
                       sx={{
                         borderRadius: 4,
                         p: 2,
-                        backgroundColor: "background.paper",
-                        boxShadow: "0 6px 18px rgba(16, 24, 40, 0.06)",
+                        backgroundColor: "#fffaf4",
+                        border: "1px solid rgba(255,145,0,0.12)",
                       }}
                     >
                       <Typography variant="subtitle1" fontWeight={600}>
@@ -200,13 +274,14 @@ const FavoritesPage = () => {
 
                   {/* NOTES PANEL */}
                   <Paper
-                    elevation={2}
+                    elevation={0}
                     sx={{
                       mt: -1,
                       p: 2,
                       borderRadius: "0 0 14px 14px",
-                      backgroundColor: "white",
-                      boxShadow: "0 8px 20px rgba(0,0,0,0.05)",
+                      backgroundColor: "#fffdf8",
+                      border: "1px solid rgba(255,145,0,0.12)",
+                      borderTop: "none",
                     }}
                   >
                     <Box
@@ -222,9 +297,16 @@ const FavoritesPage = () => {
                       </Typography>
 
                       <Button
-                        variant="outlined"
+                        variant="contained"
                         size="small"
-                        sx={{ borderRadius: 2 }}
+                        sx={{
+                          borderRadius: 2,
+                          textTransform: "none",
+                          background: "linear-gradient(90deg, #ff9800, #f57c00)",
+                          "&:hover": {
+                            background: "linear-gradient(90deg, #fb8c00, #ef6c00)",
+                          },
+                        }}
                         disabled={recipe.isLoading}
                         onClick={() => handleOpenModal(recipe)}
                       >
@@ -265,6 +347,7 @@ const FavoritesPage = () => {
                       sx={{
                         fontWeight: 600,
                         textTransform: "none",
+                        borderRadius: 2,
                         "&:hover": {
                           backgroundColor: "rgba(255,0,0,0.06)",
                         },

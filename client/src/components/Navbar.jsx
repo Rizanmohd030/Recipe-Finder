@@ -18,14 +18,22 @@ const Navbar = () => {
       position="sticky"
       elevation={0}
       sx={{
-        bgcolor: "white",
-        borderBottom: "1px solid rgba(0,0,0,0.06)",
-        boxShadow: "0 4px 18px rgba(0,0,0,0.06)",
+        bgcolor: "#fffaf4",
+        borderBottom: "1px solid rgba(255,145,0,0.14)",
+        boxShadow: "0 4px 18px rgba(0,0,0,0.05)",
         py: 0.5,
       }}
     >
       <Container maxWidth="lg">
-        <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
+        <Toolbar
+          disableGutters
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            gap: 2,
+            minHeight: 72,
+          }}
+        >
 
           {/* Logo */}
           <Typography
@@ -33,21 +41,74 @@ const Navbar = () => {
             to="/"
             sx={{
               textDecoration: "none",
-              fontSize: "1.6rem",
+              fontSize: "1.55rem",
               fontWeight: 800,
-              color: "primary.main",
+              color: "#161616",
               letterSpacing: "-0.5px",
+              whiteSpace: "nowrap",
             }}
           >
-            RecipeHunt
+            Recipe<Box component="span" sx={{ color: "primary.main" }}>Hunt</Box>
           </Typography>
 
+          <Box
+            sx={{
+              display: { xs: "none", md: "flex" },
+              alignItems: "center",
+              gap: 1,
+              flex: 1,
+              justifyContent: "center",
+            }}
+          >
+            <Button
+              component={Link}
+              to="/"
+              sx={{
+                textTransform: "none",
+                fontWeight: 700,
+                color: "text.primary",
+                borderRadius: 999,
+                px: 2,
+              }}
+            >
+              Discover
+            </Button>
+            <Button
+              component={Link}
+              to="/scan"
+              sx={{
+                textTransform: "none",
+                fontWeight: 700,
+                color: "text.primary",
+                borderRadius: 999,
+                px: 2,
+              }}
+            >
+              Scanner
+            </Button>
+            {user && (
+              <Button
+                component={Link}
+                to="/favorites"
+                sx={{
+                  textTransform: "none",
+                  fontWeight: 700,
+                  color: "text.primary",
+                  borderRadius: 999,
+                  px: 2,
+                }}
+              >
+                Collections
+              </Button>
+            )}
+          </Box>
+
           {/* RIGHT SIDE */}
-          <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1.2, flexShrink: 0 }}>
 
             {user ? (
               <>
-                <Typography sx={{ color: "text.secondary", fontWeight: 500 }}>
+                <Typography sx={{ color: "text.secondary", fontWeight: 600, display: { xs: "none", sm: "block" } }}>
                   Hi, {user.name} 👋
                 </Typography>
 
@@ -59,12 +120,13 @@ const Navbar = () => {
                   sx={{
                     textTransform: "none",
                     fontWeight: 600,
-                    borderRadius: 2,
-                    borderColor: "primary.main",
+                    borderRadius: 999,
+                    borderColor: "rgba(255,145,0,0.35)",
                     color: "primary.main",
+                    bgcolor: "rgba(255,145,0,0.06)",
                     "&:hover": {
-                      borderColor: "primary.dark",
-                      backgroundColor: "rgba(255,145,0,0.08)",
+                      borderColor: "primary.main",
+                      backgroundColor: "rgba(255,145,0,0.12)",
                     },
                   }}
                 >
@@ -80,12 +142,10 @@ const Navbar = () => {
                   sx={{
                     textTransform: "none",
                     fontWeight: 600,
-                    borderRadius: 2,
-                    background:
-                      "linear-gradient(90deg, #FF8E0A 0%, #FF6D00 100%)",
+                    borderRadius: 999,
+                    background: "linear-gradient(90deg, #ff9800, #f57c00)",
                     "&:hover": {
-                      background:
-                        "linear-gradient(90deg, #FF9800 0%, #F57C00 100%)",
+                      background: "linear-gradient(90deg, #fb8c00, #ef6c00)",
                     },
                   }}
                 >
@@ -100,8 +160,9 @@ const Navbar = () => {
                   sx={{
                     textTransform: "none",
                     fontWeight: 600,
-                    borderRadius: 2,
+                    borderRadius: 999,
                     color: "text.primary",
+                    px: 2,
                   }}
                 >
                   Login
@@ -114,12 +175,10 @@ const Navbar = () => {
                   sx={{
                     textTransform: "none",
                     fontWeight: 600,
-                    borderRadius: 2,
-                    background:
-                      "linear-gradient(90deg, #FF8E0A 0%, #FF6D00 100%)",
+                    borderRadius: 999,
+                    background: "linear-gradient(90deg, #ff9800, #f57c00)",
                     "&:hover": {
-                      background:
-                        "linear-gradient(90deg, #FF9800 0%, #F57C00 100%)",
+                      background: "linear-gradient(90deg, #fb8c00, #ef6c00)",
                     },
                   }}
                 >
