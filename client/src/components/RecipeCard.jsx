@@ -41,6 +41,8 @@ const RecipeCard = ({ recipe }) => {
           height="200"
           image={strMealThumb}
           alt={strMeal}
+          loading="lazy"
+          decoding="async"
           sx={{
             objectFit: "cover",
             width: "100%",

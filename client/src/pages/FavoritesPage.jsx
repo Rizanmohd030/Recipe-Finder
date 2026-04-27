@@ -17,6 +17,7 @@ import {
   Paper,
   Button,
   Divider,
+  Skeleton,
 } from "@mui/material";
 
 const FavoritesPage = () => {
@@ -39,22 +40,43 @@ const FavoritesPage = () => {
           return;
         }
 
-        const ids = favoriteList.map((f) => f.recipeId);
-        const detailCalls = ids.map((id) => getRecipeById(id));
-        const fetched = await Promise.all(detailCalls);
+        const initial = favoriteList.map((fav) => ({
+          idMeal: fav.recipeId,
+          strMeal: `Recipe ${fav.recipeId}`,
+          notes: fav.notes || "",
+          isLoading: true,
+        }));
 
-        const merged = favoriteList
-          .map((fav) => {
-            const recipe = fetched.find((item) => item && item.idMeal === fav.recipeId);
-            if (!recipe) return null;
-            return {
-              ...recipe,
-              notes: fav.notes || "",
-            };
-          })
-          .filter(Boolean);
+        setFavoriteRecipes(initial);
+        setLoading(false);
 
-        setFavoriteRecipes(merged);
+        favoriteList.forEach((fav) => {
+          getRecipeById(fav.recipeId)
+            .then((recipe) => {
+              setFavoriteRecipes((prev) =>
+                prev.map((item) =>
+                  item.idMeal === fav.recipeId
+                    ? {
+                        ...item,
+                        ...(recipe || {}),
+                        notes: fav.notes || "",
+                        isLoading: false,
+                        missing: !recipe,
+                      }
+                    : item
+                )
+              );
+            })
+            .catch(() => {
+              setFavoriteRecipes((prev) =>
+                prev.map((item) =>
+                  item.idMeal === fav.recipeId
+                    ? { ...item, isLoading: false, missing: true }
+                    : item
+                )
+              );
+            });
+        });
       } catch (err) {
         console.error(err);
         setError("Failed to load favorites. Try again.");
@@ -140,7 +162,41 @@ const FavoritesPage = () => {
             {favoriteRecipes.map((recipe) => (
               <Grid item key={recipe.idMeal} xs={12} sm={6} md={4} lg={3}>
                 <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
-                  <RecipeCard recipe={recipe} />
+                  {recipe.strMealThumb ? (
+                    <RecipeCard recipe={recipe} />
+                  ) : recipe.isLoading ? (
+                    <Paper
+                      elevation={2}
+                      sx={{
+                        borderRadius: 4,
+                        overflow: "hidden",
+                        backgroundColor: "background.paper",
+                        boxShadow: "0 6px 18px rgba(16, 24, 40, 0.06)",
+                      }}
+                    >
+                      <Skeleton variant="rectangular" height={200} />
+                      <Box sx={{ p: 2 }}>
+                        <Skeleton width="70%" />
+                      </Box>
+                    </Paper>
+                  ) : (
+                    <Paper
+                      elevation={2}
+                      sx={{
+                        borderRadius: 4,
+                        p: 2,
+                        backgroundColor: "background.paper",
+                        boxShadow: "0 6px 18px rgba(16, 24, 40, 0.06)",
+                      }}
+                    >
+                      <Typography variant="subtitle1" fontWeight={600}>
+                        Recipe details unavailable
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        Try again later.
+                      </Typography>
+                    </Paper>
+                  )}
 
                   {/* NOTES PANEL */}
                   <Paper
@@ -169,6 +225,7 @@ const FavoritesPage = () => {
                         variant="outlined"
                         size="small"
                         sx={{ borderRadius: 2 }}
+                        disabled={recipe.isLoading}
                         onClick={() => handleOpenModal(recipe)}
                       >
                         Edit
