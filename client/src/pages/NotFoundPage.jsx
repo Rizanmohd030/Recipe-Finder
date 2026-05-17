@@ -1,55 +1,28 @@
-// src/pages/NotFoundPage.jsx
+import React from "react";
+import { Link as RouterLink } from "react-router-dom";
+import { Box, Typography, Button, Container, Paper } from "@mui/material";
 
-import React from 'react';
-import { Link as RouterLink } from 'react-router-dom';
-
-// Import necessary MUI components
-import { Box, Typography, Button, Container } from '@mui/material';
-
-/**
- * A page to be displayed when a user navigates to a URL that does not exist.
- * It provides a clear 404 message and a link to return to the homepage.
- */
 const NotFoundPage = () => {
   return (
-    // Container centers the content and provides a max-width.
-    <Container component="main" maxWidth="md" sx={{ py: 8 }}>
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          textAlign: 'center',
-        }}
-      >
-        <Typography 
-          variant="h1" 
-          component="h1" 
-          color="primary" 
-          sx={{ fontWeight: 'bold' }}
+    <Container component="main" maxWidth="md">
+      <Paper sx={{ p: { xs: 3, md: 5 }, textAlign: "center", bgcolor: "#fffdf7" }}>
+        <Typography
+          variant="h1"
+          sx={{ fontSize: { xs: "4rem", md: "6rem" }, color: "primary.main" }}
         >
           404
         </Typography>
-        <Typography variant="h4" component="h2" gutterBottom>
-          Oops! Page Not Found.
+        <Typography variant="h3" sx={{ mt: 1 }}>
+          Page not found
         </Typography>
-        <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
-          The page you are looking for might have been removed, had its name changed,
-          or is temporarily unavailable.
+        <Typography variant="body1" color="text.secondary" sx={{ mt: 2, mb: 4 }}>
+          The page you opened does not exist or has moved.
         </Typography>
-        
-        {/* The MUI Button component can be integrated with React Router's Link
-            by using the `component` prop. This gives us a theme-styled button
-            that behaves like a navigation link. */}
-        <Button
-          variant="contained"
-          component={RouterLink}
-          to="/"
-          size="large"
-        >
-          Go to Homepage
+
+        <Button variant="contained" color="secondary" component={RouterLink} to="/" size="large">
+          Go Home
         </Button>
-      </Box>
+      </Paper>
     </Container>
   );
 };

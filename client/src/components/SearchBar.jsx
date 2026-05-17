@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Box, TextField, Button } from "@mui/material";
+import { Box, TextField, Button, InputAdornment, Typography } from "@mui/material";
 
 const SearchBar = () => {
   const [query, setQuery] = useState("");
@@ -8,79 +8,92 @@ const SearchBar = () => {
 
   const handleSearch = () => {
     if (query.trim()) {
-      navigate(`/?search=${query}`);
+      navigate(`/?search=${encodeURIComponent(query.trim())}`);
     }
   };
 
-  const handleScan = () => {
-    navigate("/scan");
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleSearch();
+    }
   };
 
   return (
-    <Box
-  sx={{
-    display: "flex",
-    justifyContent: "center",   // 👈 makes the whole group centered
-    alignItems: "center",
-    gap: 2,
-    mt: 3,
-    width: "100%",
-  }}
->
-  {/* INPUT FIELD */}
-  <TextField
-    variant="outlined"
-    placeholder="Search recipes..."
-    value={query}
-    onChange={(e) => setQuery(e.target.value)}
-    sx={{
-      flex: "0 0 50%",    // 👈 makes input shorter + centered nicely
-      maxWidth: "400px",  // 👈 avoids stretching too far on big screens
-      background: "#fff",
-      borderRadius: 2,
-    }}
-  />
+    <Box sx={{ mt: 3 }}>
+      <Box
+        sx={{
+          display: "grid",
+          gridTemplateColumns: { xs: "1fr", sm: "minmax(0, 1fr) 132px" },
+          alignItems: "stretch",
+          width: "100%",
+          maxWidth: 760,
+          mx: "auto",
+          bgcolor: "#ffffff",
+          border: "2px solid #111111",
+          boxShadow: "10px 10px 0 #111111",
+          overflow: "hidden",
+        }}
+      >
+        <TextField
+          variant="outlined"
+          placeholder=" search recipes"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          onKeyDown={handleKeyDown}
+          fullWidth
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <Typography
+                  component="span"
+                  sx={{ color: "primary.main", fontSize: "1.35rem", fontWeight: 700 }}
+                >
+                  ✚
+                </Typography>
+              </InputAdornment>
+            ),
+            sx: {
+              height: "100%",
+              "& fieldset": { border: "none" },
+            },
+          }}
+          sx={{
+            "& .MuiOutlinedInput-root": {
+              borderRadius: 0,
+            },
+            "& .MuiOutlinedInput-input": {
+              py: 2.15,
+              fontSize: { xs: "1rem", md: "1.15rem" },
+              color: "primary.main",
+            },
+          }}
+        />
 
-  {/* SEARCH BUTTON */}
-  <Button
-    variant="contained"
-    onClick={handleSearch}
-    sx={{
-      textTransform: "none",
-      fontWeight: 600,
-      borderRadius: 2,
-      px: 3,
-      background: "linear-gradient(90deg, #FF8E0A 0%, #FF6D00 100%)",
-      "&:hover": {
-        background:
-          "linear-gradient(90deg, #FF9800 0%, #F57C00 100%)",
-      },
-      height: "56px", // perfectly aligns with TextField height
-    }}
-  >
-    Search
-  </Button>
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={handleSearch}
+          sx={{
+            border: "none",
+            borderLeft: { xs: "2px solid #111111", sm: "2px solid #111111" },
+            minHeight: { xs: 64, sm: "auto" },
+            fontSize: "1.05rem",
+            "&:hover": {
+              transform: "translate(0, 0)",
+            },
+          }}
+        >
+          Search 
+        </Button>
+      </Box>
 
-  {/* SCAN BUTTON */}
-  <Button
-    variant="contained"
-    onClick={handleScan}
-    sx={{
-      textTransform: "none",
-      fontWeight: 600,
-      borderRadius: 2,
-      px: 3,
-      background: "linear-gradient(90deg, #FF8E0A 0%, #FF6D00 100%)",
-      "&:hover": {
-        background:
-          "linear-gradient(90deg, #FF9800 0%, #F57C00 100%)",
-      },
-      height: "56px",
-    }}
-  >
-    Scan
-  </Button>
-</Box>
+      <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
+        <Button variant="outlined" color="primary" onClick={() => navigate("/scan")}>
+          Open Scanner
+        </Button>
+      </Box>
+    </Box>
   );
 };
 

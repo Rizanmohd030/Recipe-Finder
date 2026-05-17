@@ -23,17 +23,16 @@ function App() {
         flexDirection: "column",
         minHeight: "100vh",
         bgcolor: "background.default",
+        color: "text.primary",
       }}
     >
       <Navbar />
 
-      {/* Unified Page Content Wrapper */}
       <Box
         component="main"
         sx={{
           flexGrow: 1,
-          mt: 2,
-          mb: 4,
+          py: { xs: 2, md: 4 },
         }}
       >
         <Routes>

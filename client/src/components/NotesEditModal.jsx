@@ -1,21 +1,14 @@
-// src/components/NotesEditModal.jsx
-
 import React, { useState, useEffect } from "react";
 import {
   Dialog,
-  DialogTitle,
   DialogContent,
   DialogActions,
   TextField,
   Button,
   Typography,
   Box,
-  Paper,
 } from "@mui/material";
 
-/**
- * Premium Orange/Glass Notes Modal (Style B)
- */
 const NotesEditModal = ({ open, onClose, recipe, onSave }) => {
   const [notesText, setNotesText] = useState("");
 
@@ -32,82 +25,41 @@ const NotesEditModal = ({ open, onClose, recipe, onSave }) => {
   };
 
   return (
-    <Dialog
-      open={open}
-      onClose={onClose}
-      maxWidth="sm"
-      fullWidth
-      PaperProps={{
-        elevation: 0,
-        sx: {
-          borderRadius: 4,
-          background: "rgba(255, 255, 255, 0.8)",
-          backdropFilter: "blur(14px)",
-          border: "1px solid rgba(255,145,0,0.25)",
-          boxShadow: "0 8px 35px rgba(255,140,0,0.25)",
-        },
-      }}
-    >
-      {/* Orange Accent Header */}
+    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <Box
         sx={{
-          p: 2.5,
           px: 3,
+          py: 2.25,
+          borderBottom: "2px solid #111111",
           bgcolor: "primary.main",
-          color: "white",
-          borderTopLeftRadius: "16px",
-          borderTopRightRadius: "16px",
+          color: "#ffffff",
         }}
       >
-        <Typography variant="h6" sx={{ fontWeight: 700 }}>
-          Edit Notes for {recipe.strMeal}
+        <Typography variant="h5" sx={{ fontWeight: 700 }}>
+          Edit Notes
+        </Typography>
+        <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.88)", mt: 0.5 }}>
+          {recipe.strMeal}
         </Typography>
       </Box>
 
-      {/* Content */}
-      <DialogContent sx={{ mt: 2 }}>
-        <Typography variant="body2" sx={{ mb: 2, color: "text.secondary" }}>
-          Add or update your personal notes.
-        </Typography>
-
+      <DialogContent sx={{ pt: 3 }}>
         <TextField
           autoFocus
           fullWidth
           multiline
-          rows={4}
+          rows={5}
           label="Your Notes"
           value={notesText}
           onChange={(e) => setNotesText(e.target.value)}
-          sx={{
-            "& .MuiOutlinedInput-root": {
-              borderRadius: 2,
-            },
-          }}
         />
       </DialogContent>
 
-      {/* Footer */}
       <DialogActions sx={{ px: 3, pb: 3 }}>
-        <Button onClick={onClose} sx={{ textTransform: "none" }}>
+        <Button onClick={onClose} variant="outlined" color="primary">
           Cancel
         </Button>
-
-        <Button
-          variant="contained"
-          onClick={handleSave}
-          sx={{
-            textTransform: "none",
-            fontWeight: 600,
-            px: 3,
-            py: 1,
-            background:
-              "linear-gradient(90deg, #FF8E0A 0%, #FF6D00 100%)",
-            "&:hover": {
-              background:
-                "linear-gradient(90deg, #FF9800 0%, #F57C00 100%)",
-            },
-          }}
-        >
+        <Button variant="contained" color="secondary" onClick={handleSave}>
           Save
         </Button>
       </DialogActions>

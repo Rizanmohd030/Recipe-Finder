@@ -1,44 +1,30 @@
-
 import React from "react";
 import { Link } from "react-router-dom";
-import {
-  Card,
-  CardActionArea,
-  CardMedia,
-  CardContent,
-  Typography,
-  Box,
-} from "@mui/material";
-
+import { Card, CardActionArea, CardMedia, CardContent, Typography, Box } from "@mui/material";
 
 const RecipeCard = ({ recipe }) => {
-  const { idMeal, strMeal, strMealThumb } = recipe;
+  const { idMeal, strMeal, strMealThumb, strCategory, strArea } = recipe;
 
   return (
     <Card
       sx={{
         height: "100%",
-        borderRadius: 4,
         overflow: "hidden",
-        backgroundColor: "background.paper",
-        boxShadow: "0 6px 18px rgba(16, 24, 40, 0.06)",
-        transition:
-          "transform 220ms cubic-bezier(.2,.8,.2,1), box-shadow 220ms",
+        bgcolor: "#fffdf7",
         "&:hover": {
-          transform: "translateY(-6px)",
-          boxShadow: "0 12px 36px rgba(16,24,40,0.10)",
+          transform: "translate(4px, 4px)",
+          boxShadow: "4px 4px 0 #111111",
         },
       }}
     >
       <CardActionArea
         component={Link}
         to={`/recipe/${idMeal}`}
-        sx={{ height: "100%", display: "flex", flexDirection: "column" }}
+        sx={{ height: "100%", display: "flex", flexDirection: "column", alignItems: "stretch" }}
       >
-        {/* IMAGE */}
         <CardMedia
           component="img"
-          height="200"
+          height="220"
           image={strMealThumb}
           alt={strMeal}
           loading="lazy"
@@ -46,30 +32,46 @@ const RecipeCard = ({ recipe }) => {
           sx={{
             objectFit: "cover",
             width: "100%",
+            borderBottom: "2px solid #111111",
           }}
         />
 
-        {/* CONTENT */}
-        <CardContent
-          sx={{
-            width: "100%",
-            textAlign: "center",
-            py: 2.5,
-            px: 2,
-          }}
-        >
+        <CardContent sx={{ width: "100%", p: 2.25 }}>
+          <Box
+            sx={{
+              display: "inline-flex",
+              px: 1,
+              py: 0.4,
+              mb: 1.5,
+              bgcolor: "primary.main",
+              color: "#ffffff",
+              border: "2px solid #111111",
+              fontSize: "0.72rem",
+              fontWeight: 700,
+              textTransform: "uppercase",
+              letterSpacing: "0.08em",
+            }}
+          >
+            {strCategory || "Recipe"}
+          </Box>
+
           <Typography
             variant="h6"
             sx={{
-              fontWeight: 600,
-              fontSize: "1.05rem",
-              color: "text.primary",
-              whiteSpace: "nowrap",
+              fontWeight: 700,
+              lineHeight: 1.1,
+              minHeight: 54,
+              display: "-webkit-box",
               overflow: "hidden",
-              textOverflow: "ellipsis",
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: "vertical",
             }}
           >
             {strMeal}
+          </Typography>
+
+          <Typography variant="body2" sx={{ mt: 1, color: "text.secondary", fontWeight: 500 }}>
+            {strArea || "Cook this next"}
           </Typography>
         </CardContent>
       </CardActionArea>

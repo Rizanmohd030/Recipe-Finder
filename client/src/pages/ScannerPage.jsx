@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
-import { Box, Button, Typography, CircularProgress } from "@mui/material";
+import { Box, Button, Typography, CircularProgress, Container, Paper } from "@mui/material";
 import RecipeCard from "../components/RecipeCard";
 import { API_BASE_URL } from "../services/apiBase";
 
@@ -51,13 +51,12 @@ export default function ScannerPage() {
 
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
-        videoRef.current.setAttribute("playsinline", true); // iPhone fix
-        videoRef.current.muted = true; // mobile autoplay fix
+        videoRef.current.setAttribute("playsinline", true);
+        videoRef.current.muted = true;
 
         try {
           await videoRef.current.play();
         } catch (err) {
-          // This can happen during rapid remount/reload in React strict mode.
           if (err?.name !== "AbortError") {
             console.error("Camera play error:", err);
           }
@@ -68,7 +67,6 @@ export default function ScannerPage() {
     }
   }, []);
 
-  // Start camera on mount
   useEffect(() => {
     isMountedRef.current = true;
     startCamera();
@@ -79,7 +77,6 @@ export default function ScannerPage() {
     };
   }, [startCamera, stopCamera]);
 
-  // CAPTURE PHOTO
   const capturePhoto = async () => {
     if (capturingRef.current) return;
     capturingRef.current = true;
@@ -107,7 +104,6 @@ export default function ScannerPage() {
     }
   };
 
-  // UPLOAD PHOTO
   const handleUpload = (e) => {
     if (capturingRef.current) return;
     capturingRef.current = true;
@@ -134,23 +130,17 @@ export default function ScannerPage() {
     e.target.value = "";
   };
 
-  // SEND TO BACKEND
   const processImage = async (base64) => {
     setLoading(true);
 
     try {
-      const res = await fetch(
-        `${API_BASE_URL}/api/vision/identify`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ image: base64 }),
-        }
-      );
+      const res = await fetch(`${API_BASE_URL}/api/vision/identify`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ image: base64 }),
+      });
 
       const data = await res.json();
-      console.log("Detected Food:", data);
-
       setResult(data.foodName);
       setRecipes(data.recipes || []);
     } catch (err) {
@@ -161,129 +151,118 @@ export default function ScannerPage() {
   };
 
   return (
-    <Box sx={{ pt: 4, px: 2, textAlign: "center" }}>
-      <Typography variant="h4" sx={{ fontWeight: 700, mb: 2 }}>
-        Scan Food
-      </Typography>
+    <Container maxWidth="lg">
+      <Paper sx={{ p: { xs: 3, md: 4 }, bgcolor: "#fffdf7" }}>
+        <Typography variant="h2" sx={{ fontSize: { xs: "2.2rem", md: "3.6rem" } }}>
+          Scan Food
+        </Typography>
+        <Typography variant="body1" sx={{ mt: 1.5, color: "text.secondary", maxWidth: 620 }}>
+          Use your camera or upload a photo. The scanner keeps the same sharp, flat UI as the
+          rest of the app.
+        </Typography>
 
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          mt: 2,
-        }}
-      >
-        {/* Live Camera Preview */}
-        {!imagePreview && (
-          <video
-            ref={videoRef}
-            autoPlay
-            playsInline
-            muted
-            style={{
-              width: "90%",
-              maxWidth: "400px",
-              borderRadius: "12px",
-              boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
-              background: "black",
-            }}
-          />
-        )}
-
-        {/* Photo Preview */}
-        {imagePreview && (
-          <img
-            src={imagePreview}
-            alt="Captured food preview"
-            style={{
-              width: "90%",
-              maxWidth: "400px",
-              borderRadius: "12px",
-              marginBottom: "10px",
-              boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
-            }}
-          />
-        )}
-
-        {/* Buttons */}
         <Box
           sx={{
-            width: "90%",
-            maxWidth: "400px",
-            mt: 1.5,
-            display: "flex",
-            flexDirection: "column",
-            gap: 1.2,
-            alignItems: "center",
+            mt: 3,
+            display: "grid",
+            gridTemplateColumns: { xs: "1fr", md: "1.05fr 0.95fr" },
+            gap: 3,
           }}
         >
-          <Button
-            variant="contained"
-            onClick={capturePhoto}
-            sx={{
-              width: "100%",
-              py: 1,
-              fontWeight: 700,
-              borderRadius: 2,
-              background: "linear-gradient(90deg, #FF8E0A 0%, #FF6D00 100%)",
-            }}
-          >
-            Capture from Camera
-          </Button>
+          <Paper sx={{ p: 2, bgcolor: "#ffffff" }}>
+            {!imagePreview ? (
+              <Box
+                component="video"
+                ref={videoRef}
+                autoPlay
+                playsInline
+                muted
+                sx={{
+                  width: "100%",
+                  aspectRatio: "4 / 3",
+                  objectFit: "cover",
+                  border: "2px solid #111111",
+                  bgcolor: "#111111",
+                }}
+              />
+            ) : (
+              <Box
+                component="img"
+                src={imagePreview}
+                alt="Captured food preview"
+                sx={{
+                  width: "100%",
+                  aspectRatio: "4 / 3",
+                  objectFit: "cover",
+                  border: "2px solid #111111",
+                }}
+              />
+            )}
+          </Paper>
 
-          <input
-            type="file"
-            accept="image/*"
-            ref={inputRef}
-            onChange={handleUpload}
-            style={{ display: "none" }}
-          />
+          <Paper sx={{ p: 3, bgcolor: "#ffffff", boxShadow: "none" }}>
+            <Typography variant="h5">Capture or Upload</Typography>
+            <Typography variant="body2" sx={{ mt: 1, color: "text.secondary" }}>
+              Keep your food centered, then submit it for recipe matches.
+            </Typography>
 
-          <Button
-            variant="outlined"
-            onClick={() => inputRef.current.click()}
-            sx={{
-              width: "100%",
-              py: 1,
-              fontWeight: 700,
-              borderRadius: 2,
-            }}
-          >
-            Upload a Photo Instead
-          </Button>
+            <Box sx={{ display: "grid", gap: 1.5, mt: 3 }}>
+              <Button variant="contained" color="secondary" onClick={capturePhoto}>
+                Capture From Camera
+              </Button>
+
+              <input
+                type="file"
+                accept="image/*"
+                ref={inputRef}
+                onChange={handleUpload}
+                style={{ display: "none" }}
+              />
+
+              <Button variant="outlined" color="primary" onClick={() => inputRef.current?.click()}>
+                Upload Photo
+              </Button>
+            </Box>
+
+            {loading && (
+              <Box sx={{ mt: 3, display: "flex", alignItems: "center", gap: 1.5 }}>
+                <CircularProgress size={28} color="primary" />
+                <Typography sx={{ fontWeight: 700 }}>Processing...</Typography>
+              </Box>
+            )}
+
+            {result && (
+              <Paper sx={{ p: 2, mt: 3, bgcolor: "#f3efeb", boxShadow: "none" }}>
+                <Typography variant="caption" sx={{ color: "primary.main", fontWeight: 700 }}>
+                  Detected Dish
+                </Typography>
+                <Typography variant="h5" sx={{ mt: 0.6 }}>
+                  {result}
+                </Typography>
+              </Paper>
+            )}
+          </Paper>
         </Box>
-      </Box>
 
-      {/* Loading */}
-      {loading && (
-        <Box sx={{ mt: 3 }}>
-          <CircularProgress size={40} />
-          <Typography sx={{ mt: 1 }}>Processing...</Typography>
-        </Box>
-      )}
-
-      {/* Detected Food */}
-      {result && (
-        <Typography sx={{ mt: 3, fontSize: "1.2rem", fontWeight: 600 }}>
-          Detected: {result}
-        </Typography>
-      )}
-
-      {/* Recipes */}
-      <Box
-        sx={{
-          mt: 3,
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
-          gap: 2,
-        }}
-      >
-        {recipes.map((recipe) => (
-          <RecipeCard key={recipe.idMeal} recipe={recipe} />
-        ))}
-      </Box>
-    </Box>
+        {recipes.length > 0 && (
+          <Box sx={{ mt: 4 }}>
+            <Typography variant="h4" sx={{ mb: 2 }}>
+              Matching Recipes
+            </Typography>
+            <Box
+              sx={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))",
+                gap: 3,
+              }}
+            >
+              {recipes.map((recipe) => (
+                <RecipeCard key={recipe.idMeal} recipe={recipe} />
+              ))}
+            </Box>
+          </Box>
+        )}
+      </Paper>
+    </Container>
   );
 }

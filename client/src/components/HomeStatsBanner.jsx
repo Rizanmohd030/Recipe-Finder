@@ -6,17 +6,17 @@ import KitchenOutlinedIcon from "@mui/icons-material/KitchenOutlined";
 
 const stats = [
   {
-    icon: <RestaurantMenuOutlinedIcon sx={{ color: "white" }} />,
+    icon: <RestaurantMenuOutlinedIcon sx={{ color: "#1A1A2E", fontSize: 30 }} />,
     value: "50K+",
     label: "recipes available",
   },
   {
-    icon: <FactCheckOutlinedIcon sx={{ color: "white" }} />,
+    icon: <FactCheckOutlinedIcon sx={{ color: "#1A1A2E", fontSize: 30 }} />,
     value: "98.2%",
     label: "scan accuracy",
   },
   {
-    icon: <KitchenOutlinedIcon sx={{ color: "white" }} />,
+    icon: <KitchenOutlinedIcon sx={{ color: "#1A1A2E", fontSize: 30 }} />,
     value: "2.4M",
     label: "dishes scanned",
   },
@@ -24,16 +24,7 @@ const stats = [
 
 const HomeStatsBanner = () => {
   return (
-    <Paper
-      elevation={0}
-      sx={{
-        mt: 4,
-        borderRadius: 3,
-        overflow: "hidden",
-        background: "linear-gradient(90deg, #ff6a00 0%, #ff5a00 100%)",
-        color: "white",
-      }}
-    >
+    <Paper sx={{ mt: 4, bgcolor: "#fffdf7" }}>
       <Box
         sx={{
           display: "grid",
@@ -45,27 +36,26 @@ const HomeStatsBanner = () => {
             key={stat.label}
             sx={{
               px: 3,
-              py: 2.6,
+              py: 2.75,
               textAlign: "center",
-              borderRight: {
-                xs: "none",
-                md: index < stats.length - 1 ? "1px solid rgba(255,255,255,0.22)" : "none",
-              },
-              borderBottom: {
-                xs: index < stats.length - 1 ? "1px solid rgba(255,255,255,0.22)" : "none",
-                md: "none",
-              },
+              borderRight: { md: index < stats.length - 1 ? "2px solid #111111" : "none" },
+              borderBottom: { xs: index < stats.length - 1 ? "2px solid #111111" : "none", md: "none" },
             }}
           >
-            <Box sx={{ display: "flex", justifyContent: "center", mb: 1 }}>
-              {stat.icon}
-            </Box>
-            <Typography variant="h4" sx={{ fontWeight: 800, lineHeight: 1 }}>
+            <Box sx={{ display: "flex", justifyContent: "center", mb: 1 }}>{stat.icon}</Box>
+            <Typography variant="h4" sx={{ fontWeight: 700 }}>
               {stat.value}
             </Typography>
             <Typography
               variant="caption"
-              sx={{ letterSpacing: "0.18em", textTransform: "uppercase" }}
+              sx={{
+                mt: 0.75,
+                display: "block",
+                color: "text.secondary",
+                textTransform: "uppercase",
+                letterSpacing: "0.1em",
+                fontWeight: 700,
+              }}
             >
               {stat.label}
             </Typography>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Box, Paper, Typography, Stack as MuiStack } from "@mui/material";
+import { Box, Paper, Typography } from "@mui/material";
 
 const slides = [
   {
@@ -31,20 +31,8 @@ const HomeHeroCarousel = () => {
   }, []);
 
   return (
-    <Paper
-      elevation={0}
-      sx={{
-        width: "100%",
-        maxWidth: 420,
-        mx: "auto",
-        borderRadius: 4,
-        overflow: "hidden",
-        bgcolor: "transparent",
-        boxShadow: "0 18px 40px rgba(0,0,0,0.22)",
-        border: "1px solid rgba(255,255,255,0.08)",
-      }}
-    >
-      <Box sx={{ position: "relative", aspectRatio: "4 / 5", bgcolor: "#141414" }}>
+    <Paper sx={{ width: "100%", maxWidth: 430, bgcolor: "#ffffff", p: 1.5 }}>
+      <Box sx={{ position: "relative", aspectRatio: "4 / 5", overflow: "hidden", border: "2px solid #111111" }}>
         {slides.map((slide, index) => (
           <Box
             key={slide.title}
@@ -66,18 +54,16 @@ const HomeHeroCarousel = () => {
         ))}
       </Box>
 
-      <MuiStack
-        direction="row"
-        alignItems="center"
-        justifyContent="space-between"
+      <Box
         sx={{
-          px: 2,
-          py: 1.5,
-          bgcolor: "#1e1e1e",
-          color: "white",
+          display: "flex",
+          justifyContent: "space-between",
+          gap: 2,
+          alignItems: "center",
+          pt: 1.5,
         }}
       >
-        <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
+        <Typography variant="h6" sx={{ fontWeight: 700 }}>
           {slides[activeIndex].title}
         </Typography>
 
@@ -86,16 +72,15 @@ const HomeHeroCarousel = () => {
             <Box
               key={slide.title}
               sx={{
-                width: 8,
-                height: 8,
-                borderRadius: "50%",
-                bgcolor: index === activeIndex ? "primary.main" : "rgba(255,255,255,0.35)",
-                transition: "background-color 200ms ease",
+                width: 12,
+                height: 12,
+                border: "2px solid #111111",
+                bgcolor: index === activeIndex ? "secondary.main" : "#ffffff",
               }}
             />
           ))}
         </Box>
-      </MuiStack>
+      </Box>
     </Paper>
   );
 };

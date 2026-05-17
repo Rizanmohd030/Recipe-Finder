@@ -61,7 +61,7 @@ const RegisterPage = () => {
           account.
         </>
       }
-      description="Register to save favorites, add notes, and use the same warm RecipeHunt experience across every page."
+      description="Register to save favorites, add notes, and use the same bold RecipeFinder interface across every page."
       points={[
         { title: "Save", body: "Keep your favorite meals in one place." },
         { title: "Note", body: "Write personal notes for every recipe." },

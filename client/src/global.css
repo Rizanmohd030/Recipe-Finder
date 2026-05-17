@@ -1,61 +1,60 @@
-/* src/global.css */
+@import url("https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Space+Grotesk:wght@400;500;700&display=swap");
 
-/* Smooth font rendering */
-html, body {
+html,
+body,
+#root {
   margin: 0;
-  padding: 0;
-  font-family: "Montserrat", sans-serif;
-  -webkit-font-smoothing: antialiased;
-  background-color: #fafafa; /* matches your theme */
+  min-height: 100%;
 }
 
-/* Improve scroll behavior */
 html {
   scroll-behavior: smooth;
 }
 
-/* Remove blue highlight on mobile */
-* {
+body {
+  font-family: "Space Grotesk", "Trebuchet MS", "Segoe UI", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  color: #111111;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
   -webkit-tap-highlight-color: transparent;
 }
 
-/* Smooth animations for interactive elements */
-button, a, input, textarea {
-  transition: all 0.2s ease;
-}
-
-/* Improve scrollbar (subtle, premium feel) */
-::-webkit-scrollbar {
-  width: 8px;
-}
-::-webkit-scrollbar-track {
-  background: #f4f4f4;
-}
-::-webkit-scrollbar-thumb {
-  background: #e0e0e0;
-  border-radius: 10px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #c6c6c6;
-}
-
-/* Card spacing consistency */
-.MuiCard-root {
-  border-radius: 16px !important;
-}
-
-/* Improve link look */
 a {
-  text-decoration: none;
   color: inherit;
+  text-decoration: none;
 }
 
-/* Make clickable elements feel nice */
-button:hover, a:hover {
-  opacity: 0.95;
+button,
+input,
+textarea,
+a {
+  transition: transform 160ms ease, background-color 160ms ease, color 160ms ease;
 }
 
-/* Disable selection on navbar elements */
-nav, header {
-  user-select: none;
+::selection {
+  background: #ff5b1f;
+  color: #ffffff;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f5f0e8;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #ffffff;
+  border: 2px solid #111111;
+}
+
+img {
+  display: block;
+  max-width: 100%;
 }

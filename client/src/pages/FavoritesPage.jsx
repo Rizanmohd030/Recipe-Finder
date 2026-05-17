@@ -1,14 +1,10 @@
-// src/pages/FavoritesPage.jsx
-
 import React, { useState, useEffect } from "react";
 import { getFavorites, removeFavorite, updateFavoriteNotes } from "../services/favoriteService";
 import { getRecipeById } from "../services/recipeService";
-
 import RecipeCard from "../components/RecipeCard";
 import LoadingSpinner from "../components/LoadingSpinner";
 import ErrorComponent from "../components/ErrorComponent";
 import NotesEditModal from "../components/NotesEditModal";
-
 import {
   Container,
   Grid,
@@ -24,7 +20,6 @@ const FavoritesPage = () => {
   const [favoriteRecipes, setFavoriteRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedRecipe, setSelectedRecipe] = useState(null);
 
@@ -91,9 +86,7 @@ const FavoritesPage = () => {
   const handleRemoveFavorite = async (recipeId) => {
     try {
       await removeFavorite(recipeId);
-      setFavoriteRecipes((prev) =>
-        prev.filter((item) => item.idMeal !== recipeId)
-      );
+      setFavoriteRecipes((prev) => prev.filter((item) => item.idMeal !== recipeId));
     } catch {
       alert("Could not remove favorite.");
     }
@@ -113,9 +106,7 @@ const FavoritesPage = () => {
     try {
       await updateFavoriteNotes(recipeId, newNotes);
       setFavoriteRecipes((prev) =>
-        prev.map((r) =>
-          r.idMeal === recipeId ? { ...r, notes: newNotes } : r
-        )
+        prev.map((r) => (r.idMeal === recipeId ? { ...r, notes: newNotes } : r))
       );
       handleCloseModal();
     } catch {
@@ -137,230 +128,167 @@ const FavoritesPage = () => {
 
   return (
     <>
-      <Container maxWidth="lg" sx={{ py: 6 }}>
-        <Paper
-          elevation={0}
-          sx={{
-            p: { xs: 3, md: 4 },
-            mb: 4,
-            borderRadius: 4,
-            background: "linear-gradient(135deg, #fff7e8 0%, #ffffff 100%)",
-            border: "1px solid rgba(255,145,0,0.18)",
-          }}
-        >
+      <Container maxWidth="lg">
+        <Paper sx={{ p: { xs: 3, md: 4 }, bgcolor: "#fffdf7" }}>
           <Box
             sx={{
               display: "inline-flex",
-              alignItems: "center",
-              px: 1.2,
-              py: 0.4,
+              px: 1,
+              py: 0.45,
               mb: 2,
-              bgcolor: "#ff5a00",
-              color: "white",
-              fontSize: "0.68rem",
-              fontWeight: 800,
-              letterSpacing: "0.14em",
-              borderRadius: 0.5,
+              bgcolor: "secondary.main",
+              color: "#ffffff",
+              border: "2px solid #111111",
+              fontSize: "0.72rem",
+              fontWeight: 700,
+              letterSpacing: "0.1em",
+              textTransform: "uppercase",
             }}
           >
-            MY COLLECTION
+            Favorites
           </Box>
 
-          <Typography
-            variant="h3"
-            sx={{
-              fontWeight: 800,
-              mb: 1.2,
-              color: "#161616",
-              letterSpacing: "-0.5px",
-              fontSize: { xs: "2.2rem", md: "3.2rem" },
-            }}
-          >
-            My Favorite Recipes
+          <Typography variant="h2" sx={{ fontSize: { xs: "2.2rem", md: "3.8rem" } }}>
+            Your saved recipes
           </Typography>
-
-          <Typography
-            variant="body1"
-            sx={{ color: "text.secondary", maxWidth: 650, lineHeight: 1.8 }}
-          >
-            Keep your saved recipes and notes in one place with the same RecipeHunt style you see across the app.
+          <Typography variant="body1" sx={{ mt: 1.5, maxWidth: 640, color: "text.secondary" }}>
+            Everything is now styled with the same graphic language: white blocks, bold borders,
+            and direct actions.
           </Typography>
 
           <Box
             sx={{
+              mt: 3,
               display: "grid",
               gridTemplateColumns: { xs: "1fr", sm: "repeat(3, 1fr)" },
-              gap: 1.5,
-              mt: 3,
+              gap: 2,
             }}
           >
-            <Paper elevation={0} sx={{ p: 2, borderRadius: 3, border: "1px solid rgba(0,0,0,0.06)" }}>
-              <Typography variant="caption" sx={{ color: "primary.main", fontWeight: 800, letterSpacing: "0.14em", textTransform: "uppercase" }}>
+            <Paper sx={{ p: 2, bgcolor: "#ffffff" }}>
+              <Typography variant="caption" sx={{ color: "primary.main", fontWeight: 700 }}>
                 Saved recipes
               </Typography>
-              <Typography variant="h5" sx={{ mt: 0.7, fontWeight: 800 }}>
+              <Typography variant="h4" sx={{ mt: 0.5 }}>
                 {favoriteRecipes.length}
               </Typography>
             </Paper>
-
-            <Paper elevation={0} sx={{ p: 2, borderRadius: 3, border: "1px solid rgba(0,0,0,0.06)" }}>
-              <Typography variant="caption" sx={{ color: "primary.main", fontWeight: 800, letterSpacing: "0.14em", textTransform: "uppercase" }}>
-                Recipes with notes
+            <Paper sx={{ p: 2, bgcolor: "#ffffff" }}>
+              <Typography variant="caption" sx={{ color: "primary.main", fontWeight: 700 }}>
+                Notes added
               </Typography>
-              <Typography variant="h5" sx={{ mt: 0.7, fontWeight: 800 }}>
+              <Typography variant="h4" sx={{ mt: 0.5 }}>
                 {notesCount}
               </Typography>
             </Paper>
-
-            <Paper elevation={0} sx={{ p: 2, borderRadius: 3, border: "1px solid rgba(0,0,0,0.06)" }}>
-              <Typography variant="caption" sx={{ color: "primary.main", fontWeight: 800, letterSpacing: "0.14em", textTransform: "uppercase" }}>
-                Quick access
+            <Paper sx={{ p: 2, bgcolor: "#ffffff" }}>
+              <Typography variant="caption" sx={{ color: "primary.main", fontWeight: 700 }}>
+                Quick actions
               </Typography>
-              <Typography variant="h5" sx={{ mt: 0.7, fontWeight: 800 }}>
+              <Typography variant="h4" sx={{ mt: 0.5 }}>
                 Edit / Remove
               </Typography>
             </Paper>
           </Box>
         </Paper>
 
-        {favoriteRecipes.length === 0 ? (
-          <Typography
-            variant="h6"
-            align="center"
-            sx={{ mt: 6, color: "text.secondary" }}
-          >
-            You haven't saved any favorite recipes yet.
-          </Typography>
-        ) : (
-          <Grid container spacing={3}>
-            {favoriteRecipes.map((recipe) => (
-              <Grid item key={recipe.idMeal} xs={12} sm={6} md={4} lg={3}>
-                <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
-                  {recipe.strMealThumb ? (
-                    <RecipeCard recipe={recipe} />
-                  ) : recipe.isLoading ? (
-                    <Paper
-                      elevation={0}
-                      sx={{
-                        borderRadius: 4,
-                        overflow: "hidden",
-                        backgroundColor: "#fffaf4",
-                        border: "1px solid rgba(255,145,0,0.12)",
-                      }}
-                    >
-                      <Skeleton variant="rectangular" height={200} />
-                      <Box sx={{ p: 2 }}>
-                        <Skeleton width="70%" />
-                      </Box>
-                    </Paper>
-                  ) : (
-                    <Paper
-                      elevation={0}
-                      sx={{
-                        borderRadius: 4,
-                        p: 2,
-                        backgroundColor: "#fffaf4",
-                        border: "1px solid rgba(255,145,0,0.12)",
-                      }}
-                    >
-                      <Typography variant="subtitle1" fontWeight={600}>
-                        Recipe details unavailable
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        Try again later.
-                      </Typography>
-                    </Paper>
-                  )}
-
-                  {/* NOTES PANEL */}
-                  <Paper
-                    elevation={0}
-                    sx={{
-                      mt: -1,
-                      p: 2,
-                      borderRadius: "0 0 14px 14px",
-                      backgroundColor: "#fffdf8",
-                      border: "1px solid rgba(255,145,0,0.12)",
-                      borderTop: "none",
-                    }}
-                  >
-                    <Box
-                      sx={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        mb: 1,
-                      }}
-                    >
-                      <Typography variant="subtitle2" fontWeight={700}>
-                        My Notes
-                      </Typography>
-
-                      <Button
-                        variant="contained"
-                        size="small"
-                        sx={{
-                          borderRadius: 2,
-                          textTransform: "none",
-                          background: "linear-gradient(90deg, #ff9800, #f57c00)",
-                          "&:hover": {
-                            background: "linear-gradient(90deg, #fb8c00, #ef6c00)",
-                          },
-                        }}
-                        disabled={recipe.isLoading}
-                        onClick={() => handleOpenModal(recipe)}
-                      >
-                        Edit
-                      </Button>
-                    </Box>
-
-                    {recipe.notes ? (
-                      <Typography
-                        variant="body2"
-                        sx={{
-                          fontStyle: "italic",
-                          color: "text.primary",
-                          whiteSpace: "pre-wrap",
-                        }}
-                      >
-                        {recipe.notes}
-                      </Typography>
+        <Box sx={{ mt: 4 }}>
+          {favoriteRecipes.length === 0 ? (
+            <Paper sx={{ p: 4, textAlign: "center", bgcolor: "#fffdf7" }}>
+              <Typography variant="h5">You have not saved any recipes yet.</Typography>
+            </Paper>
+          ) : (
+            <Grid container spacing={3}>
+              {favoriteRecipes.map((recipe) => (
+                <Grid item key={recipe.idMeal} xs={12} sm={6} md={4} lg={3}>
+                  <Box sx={{ display: "flex", flexDirection: "column", gap: 0 }}>
+                    {recipe.strMealThumb ? (
+                      <RecipeCard recipe={recipe} />
+                    ) : recipe.isLoading ? (
+                      <Paper sx={{ overflow: "hidden", bgcolor: "#ffffff" }}>
+                        <Skeleton variant="rectangular" height={220} />
+                        <Box sx={{ p: 2 }}>
+                          <Skeleton width="70%" />
+                        </Box>
+                      </Paper>
                     ) : (
-                      <Typography
-                        variant="body2"
-                        sx={{
-                          color: "text.secondary",
-                          fontStyle: "italic",
-                        }}
-                      >
-                        No notes yet. Add one!
-                      </Typography>
+                      <Paper sx={{ p: 2, bgcolor: "#ffffff" }}>
+                        <Typography variant="subtitle1" fontWeight={700}>
+                          Recipe details unavailable
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          Try again later.
+                        </Typography>
+                      </Paper>
                     )}
 
-                    <Divider sx={{ my: 1.5 }} />
-
-                    <Button
-                      fullWidth
-                      color="error"
-                      variant="text"
-                      onClick={() => handleRemoveFavorite(recipe.idMeal)}
+                    <Paper
                       sx={{
-                        fontWeight: 600,
-                        textTransform: "none",
-                        borderRadius: 2,
-                        "&:hover": {
-                          backgroundColor: "rgba(255,0,0,0.06)",
-                        },
+                        p: 2,
+                        mt: 1.5,
+                        bgcolor: "#ffffff",
                       }}
                     >
-                      Remove
-                    </Button>
-                  </Paper>
-                </Box>
-              </Grid>
-            ))}
-          </Grid>
-        )}
+                      <Box
+                        sx={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                          mb: 1,
+                          gap: 1,
+                        }}
+                      >
+                        <Typography variant="subtitle2" fontWeight={700}>
+                          Notes
+                        </Typography>
+
+                        <Button
+                          variant="contained"
+                          color="secondary"
+                          size="small"
+                          disabled={recipe.isLoading}
+                          onClick={() => handleOpenModal(recipe)}
+                        >
+                          Edit
+                        </Button>
+                      </Box>
+
+                      {recipe.notes ? (
+                        <Typography
+                          variant="body2"
+                          sx={{ color: "text.primary", whiteSpace: "pre-wrap" }}
+                        >
+                          {recipe.notes}
+                        </Typography>
+                      ) : (
+                        <Typography variant="body2" sx={{ color: "text.secondary" }}>
+                          No notes yet.
+                        </Typography>
+                      )}
+
+                      <Divider sx={{ my: 1.5 }} />
+
+                      <Button
+                        fullWidth
+                        color="error"
+                        variant="text"
+                        onClick={() => handleRemoveFavorite(recipe.idMeal)}
+                        sx={{
+                          border: "2px solid #111111",
+                          color: "#d92d20",
+                          "&:hover": {
+                            backgroundColor: "#fff2f0",
+                          },
+                        }}
+                      >
+                        Remove
+                      </Button>
+                    </Paper>
+                  </Box>
+                </Grid>
+              ))}
+            </Grid>
+          )}
+        </Box>
       </Container>
 
       {selectedRecipe && (

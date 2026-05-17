@@ -1,217 +1,203 @@
-// src/theme.js
 import { createTheme } from "@mui/material/styles";
 
-/**
- * Orange & White Premium Theme
- * - Primary: warm orange
- * - Accent: soft orange gradient
- * - Background: white + very light off-white
- * - Typography: Montserrat + fallbacks
- *
- * This theme focuses on:
- *  - consistent radii
- *  - soft shadows (elevation)
- *  - button / card motion-friendly transitions
- *  - component style overrides to keep UI consistent
- */
-
-const PRIMARY_ORANGE = "#FF6A2A"; // main orange
-const PRIMARY_ORANGE_LIGHT = "#FF8C52"; // lighter orange
-const SOFT_ORANGE = "#FFB78C"; // subtle accent
-const DARK_TEXT = "#1F2937";
-const OFF_WHITE = "#FAFAFB";
-const WHITE = "#FFFFFF";
+const BLUE = "#1A1A2E";
+const BLUE_DARK = "#121222";
+const ORANGE = "#ff5b1f";
+const ORANGE_DARK = "#d94811";
+const CREAM = "#fffdf7";
+const PAGE_BG = "#F5F0E8";
+const WHITE = "#ffffff";
+const BLACK = "#111111";
+const GRAY = "#5f6673";
+const BORDER = "2px solid #111111";
+const SHADOW = "8px 8px 0 #111111";
 
 const theme = createTheme({
   palette: {
     mode: "light",
     primary: {
-      main: PRIMARY_ORANGE,
-      light: PRIMARY_ORANGE_LIGHT,
+      main: BLUE,
+      dark: BLUE_DARK,
       contrastText: WHITE,
     },
     secondary: {
-      main: "#6B7280", // muted gray for secondary text / controls
+      main: ORANGE,
+      dark: ORANGE_DARK,
+      contrastText: WHITE,
     },
     background: {
-      default: OFF_WHITE,
+      default: PAGE_BG,
       paper: WHITE,
     },
     text: {
-      primary: DARK_TEXT,
-      secondary: "#6B7280",
+      primary: BLACK,
+      secondary: GRAY,
     },
-    // success, error etc. left as defaults or can be customized
+    error: {
+      main: "#d92d20",
+    },
+    success: {
+      main: "#0f9d58",
+    },
   },
-
   typography: {
-    fontFamily: '"Montserrat", "Inter", "Roboto", "Helvetica", "Arial", sans-serif',
-    h1: { fontWeight: 700, letterSpacing: "-0.02em" },
-    h2: { fontWeight: 700 },
-    h3: { fontWeight: 700 },
-    h4: { fontWeight: 600 },
-    h5: { fontWeight: 600 },
-    h6: { fontWeight: 600 },
+    fontFamily: '"Space Grotesk", "Trebuchet MS", "Segoe UI", sans-serif',
+    h1: { fontWeight: 700, letterSpacing: "-0.06em" },
+    h2: { fontWeight: 700, letterSpacing: "-0.05em" },
+    h3: { fontWeight: 700, letterSpacing: "-0.04em" },
+    h4: { fontWeight: 700, letterSpacing: "-0.03em" },
+    h5: { fontWeight: 700, letterSpacing: "-0.02em" },
+    h6: { fontWeight: 700 },
     body1: { fontSize: "1rem", lineHeight: 1.6 },
-    body2: { fontSize: "0.95rem", lineHeight: 1.5 },
-    button: { textTransform: "none", fontWeight: 600 },
+    body2: { fontSize: "0.95rem", lineHeight: 1.55 },
+    button: {
+      fontFamily: '"Barlow Condensed", "Arial Narrow", sans-serif',
+      fontWeight: 700,
+      textTransform: "uppercase",
+      letterSpacing: "0.04em",
+    },
   },
-
-  spacing: 8, // 8px base
-
   shape: {
-    borderRadius: 12, // global border radius (rounded, modern)
+    borderRadius: 0,
   },
-
-  // Global transitions/shadows tokens for consistent usage
-  shadows: [
-    "none",
-    "0px 1px 3px rgba(16,24,40,0.04)",
-    "0px 4px 12px rgba(16,24,40,0.06)",
-    "0px 8px 24px rgba(16,24,40,0.08)",
-    "0px 12px 40px rgba(16,24,40,0.12)",
-  ],
-
   components: {
-    // Global Paper defaults (cards, panels)
+    MuiCssBaseline: {
+      styleOverrides: {
+        body: {
+          backgroundColor: PAGE_BG,
+          backgroundImage:
+            "radial-gradient(circle at top left, rgba(255,255,255,0.14) 0, rgba(255,255,255,0.14) 2px, transparent 2px)",
+          backgroundSize: "22px 22px",
+        },
+      },
+    },
+    MuiContainer: {
+      styleOverrides: {
+        root: {
+          position: "relative",
+          zIndex: 1,
+        },
+      },
+    },
     MuiPaper: {
       defaultProps: {
         elevation: 0,
       },
       styleOverrides: {
         root: {
-          backgroundClip: "padding-box",
-          borderRadius: 14,
+          backgroundColor: WHITE,
+          border: BORDER,
+          borderRadius: 0,
+          boxShadow: SHADOW,
         },
       },
     },
-
-    // Buttons: primary CTA styling
     MuiButton: {
       defaultProps: {
         disableElevation: true,
       },
       styleOverrides: {
         root: {
-          borderRadius: 12,
-          padding: "10px 18px",
-          transition: "transform 180ms cubic-bezier(.2,.8,.2,1), box-shadow 180ms",
+          borderRadius: 0,
+          padding: "12px 20px",
+          boxShadow: "none",
+          border: BORDER,
+          transform: "translate(0, 0)",
+          transition: "transform 160ms ease, background-color 160ms ease, color 160ms ease",
+          "&:hover": {
+            boxShadow: "none",
+            transform: "translate(2px, 2px)",
+          },
         },
         containedPrimary: {
-          background: `linear-gradient(90deg, ${PRIMARY_ORANGE}, ${PRIMARY_ORANGE_LIGHT})`,
+          backgroundColor: BLUE,
           color: WHITE,
-          boxShadow: "0 6px 18px rgba(255,106,42,0.12)",
           "&:hover": {
-            transform: "translateY(-2px)",
-            boxShadow: "0 10px 30px rgba(255,106,42,0.14)",
+            backgroundColor: BLUE_DARK,
           },
-          "&:active": {
-            transform: "translateY(0)",
-            boxShadow: "0 6px 18px rgba(255,106,42,0.12)",
+        },
+        containedSecondary: {
+          backgroundColor: ORANGE,
+          color: WHITE,
+          "&:hover": {
+            backgroundColor: ORANGE_DARK,
           },
+        },
+        outlined: {
+          backgroundColor: WHITE,
         },
         outlinedPrimary: {
-          borderColor: PRIMARY_ORANGE,
-          color: PRIMARY_ORANGE,
+          borderColor: BLACK,
+          color: BLACK,
           "&:hover": {
-            backgroundColor: "rgba(255,106,42,0.04)",
-            borderColor: PRIMARY_ORANGE,
-            transform: "translateY(-1px)",
+            borderColor: BLACK,
+            backgroundColor: "#f3efeb",
           },
-        },
-        textPrimary: {
-          color: PRIMARY_ORANGE,
         },
       },
     },
-
-    // Cards - subtle lift on hover
     MuiCard: {
       styleOverrides: {
         root: {
-          borderRadius: 16,
-          transition: "transform 220ms cubic-bezier(.2,.8,.2,1), box-shadow 220ms",
-          boxShadow: "0 6px 18px rgba(16,24,40,0.06)",
-          "&:hover": {
-            transform: "translateY(-6px)",
-            boxShadow: "0 12px 36px rgba(16,24,40,0.10)",
-          },
+          border: BORDER,
+          borderRadius: 0,
+          boxShadow: SHADOW,
         },
       },
     },
-
-    // CardMedia: ensure clean image handling
-    MuiCardMedia: {
-      styleOverrides: {
-        root: {
-          borderTopLeftRadius: 16,
-          borderTopRightRadius: 16,
-        },
-      },
-    },
-
-    // Dialogs (modal) — floating with gentle shadow
     MuiDialog: {
       styleOverrides: {
         paper: {
-          borderRadius: 14,
-          padding: 0,
-          boxShadow: "0 20px 60px rgba(16,24,40,0.12)",
+          backgroundColor: WHITE,
+          border: BORDER,
+          borderRadius: 0,
+          boxShadow: "12px 12px 0 #111111",
         },
       },
     },
-
-    // TextField / Input styles
     MuiOutlinedInput: {
       styleOverrides: {
         root: {
-          borderRadius: 12,
           backgroundColor: WHITE,
-          "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-            borderColor: PRIMARY_ORANGE,
-            boxShadow: "0 6px 18px rgba(255,106,42,0.06)",
+          borderRadius: 0,
+          "& fieldset": {
+            borderColor: BLACK,
+            borderWidth: "2px",
+          },
+          "&:hover fieldset": {
+            borderColor: BLACK,
+          },
+          "&.Mui-focused fieldset": {
+            borderColor: BLUE,
           },
         },
-      },
-    },
-
-    // Typography default color
-    MuiTypography: {
-      styleOverrides: {
-        root: {
-          color: DARK_TEXT,
+        input: {
+          paddingTop: 14,
+          paddingBottom: 14,
         },
       },
     },
-
-    // Tooltip small tweaks (optional)
-    MuiTooltip: {
+    MuiInputLabel: {
       styleOverrides: {
-        tooltip: {
-          borderRadius: 8,
+        root: {
+          fontWeight: 600,
         },
       },
     },
-
-    // List items (used in menus)
-    MuiListItemButton: {
+    MuiAlert: {
       styleOverrides: {
         root: {
-          borderRadius: 10,
-          "&.Mui-selected": {
-            backgroundColor: "rgba(255,106,42,0.06)",
-            color: PRIMARY_ORANGE,
-          },
+          border: BORDER,
+          borderRadius: 0,
+          boxShadow: "6px 6px 0 #111111",
         },
       },
     },
-
-    // Avatar sizes for profile initials
-    MuiAvatar: {
+    MuiDivider: {
       styleOverrides: {
         root: {
-          backgroundColor: PRIMARY_ORANGE,
-          color: WHITE,
+          borderColor: "#111111",
+          opacity: 0.2,
         },
       },
     },
