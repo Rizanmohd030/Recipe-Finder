@@ -85,7 +85,7 @@ const RecipePage = () => {
             gridTemplateColumns: { xs: "1fr", md: "1.05fr 0.95fr" },
           }}
         >
-          <Box sx={{ p: { xs: 3, md: 4 } }}>
+          <Box sx={{ p: { xs: 2, sm: 3, md: 4 } }}>
             <Box
               sx={{
                 display: "inline-flex",
@@ -95,10 +95,11 @@ const RecipePage = () => {
                 bgcolor: "secondary.main",
                 color: "#ffffff",
                 border: "2px solid #111111",
-                fontSize: "0.72rem",
+                fontSize: "0.68rem",
                 fontWeight: 700,
                 textTransform: "uppercase",
                 letterSpacing: "0.1em",
+                maxWidth: "100%",
               }}
             >
               {recipe.strCategory} / {recipe.strArea}
@@ -107,9 +108,10 @@ const RecipePage = () => {
             <Typography
               variant="h1"
               sx={{
-                fontSize: { xs: "2.5rem", md: "4.2rem" },
-                lineHeight: 0.92,
+                fontSize: { xs: "2rem", sm: "2.5rem", md: "4.2rem" },
+                lineHeight: { xs: 0.98, md: 0.92 },
                 maxWidth: 520,
+                wordBreak: "break-word",
               }}
             >
               {recipe.strMeal}
@@ -120,7 +122,7 @@ const RecipePage = () => {
                 onClick={handleSaveToFavorites}
                 variant="contained"
                 color="secondary"
-                sx={{ mt: 3 }}
+                sx={{ mt: 3, width: { xs: "100%", sm: "auto" } }}
               >
                 Save to Favorites
               </Button>
@@ -152,14 +154,14 @@ const RecipePage = () => {
 
         <Box
           sx={{
-            p: { xs: 3, md: 4 },
+            p: { xs: 2, sm: 3, md: 4 },
             display: "grid",
             gridTemplateColumns: { xs: "1fr", md: "0.9fr 1.1fr" },
-            gap: 3,
+            gap: { xs: 2, md: 3 },
           }}
         >
-          <Paper sx={{ p: 3, bgcolor: "#ffffff" }}>
-            <Typography variant="h4" sx={{ mb: 2 }}>
+          <Paper sx={{ p: { xs: 2, sm: 3 }, bgcolor: "#ffffff" }}>
+            <Typography variant="h4" sx={{ mb: 2, fontSize: { xs: "1.5rem", md: "2.125rem" } }}>
               Ingredients
             </Typography>
 
@@ -178,8 +180,8 @@ const RecipePage = () => {
             </Grid>
           </Paper>
 
-          <Paper sx={{ p: 3, bgcolor: "#ffffff" }}>
-            <Typography variant="h4" sx={{ mb: 2 }}>
+          <Paper sx={{ p: { xs: 2, sm: 3 }, bgcolor: "#ffffff" }}>
+            <Typography variant="h4" sx={{ mb: 2, fontSize: { xs: "1.5rem", md: "2.125rem" } }}>
               Instructions
             </Typography>
             <Typography

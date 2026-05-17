@@ -18,10 +18,11 @@ const badgeSx = {
   bgcolor: "secondary.main",
   color: "#ffffff",
   border: "2px solid #111111",
-  fontSize: "0.72rem",
+  fontSize: "0.68rem",
   fontWeight: 700,
   letterSpacing: "0.1em",
   textTransform: "uppercase",
+  maxWidth: "100%",
 };
 
 const HomePage = () => {
@@ -66,13 +67,13 @@ const HomePage = () => {
 
   return (
     <Container maxWidth="lg">
-      <Box sx={{ display: "grid", gap: 4 }}>
-        <Paper sx={{ p: { xs: 3, md: 4 } }}>
+      <Box sx={{ display: "grid", gap: { xs: 3, md: 4 } }}>
+        <Paper sx={{ p: { xs: 2, sm: 3, md: 4 } }}>
           <Box
             sx={{
               display: "grid",
               gridTemplateColumns: { xs: "1fr", md: "1.05fr 0.95fr" },
-              gap: 4,
+              gap: { xs: 3, md: 4 },
               alignItems: "center",
             }}
           >
@@ -82,8 +83,8 @@ const HomePage = () => {
               <Typography
                 variant="h1"
                 sx={{
-                  fontSize: { xs: "3rem", md: "5.2rem" },
-                  lineHeight: 0.88,
+                  fontSize: { xs: "2.35rem", sm: "3rem", md: "5.2rem" },
+                  lineHeight: { xs: 0.94, md: 0.88 },
                   maxWidth: 560,
                 }}
               >
@@ -99,10 +100,10 @@ const HomePage = () => {
               <Typography
                 variant="body1"
                 sx={{
-                  mt: 2.5,
+                  mt: 2,
                   maxWidth: 540,
                   color: "text.secondary",
-                  fontSize: { xs: "1rem", md: "1.08rem" },
+                  fontSize: { xs: "0.96rem", md: "1.08rem" },
                 }}
               >
                 Search recipes or point your camera at a dish and jump straight into ingredients,
@@ -110,10 +111,21 @@ const HomePage = () => {
               </Typography>
 
               <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1.5, mt: 3 }}>
-                <Button component={Link} to="/scan" variant="contained" color="secondary">
+                <Button
+                  component={Link}
+                  to="/scan"
+                  variant="contained"
+                  color="secondary"
+                  sx={{ width: { xs: "100%", sm: "auto" } }}
+                >
                   Scan Food
                 </Button>
-                <Button onClick={handleBrowseClick} variant="outlined" color="primary">
+                <Button
+                  onClick={handleBrowseClick}
+                  variant="outlined"
+                  color="primary"
+                  sx={{ width: { xs: "100%", sm: "auto" } }}
+                >
                   Browse Recipes
                 </Button>
               </Box>
@@ -125,8 +137,8 @@ const HomePage = () => {
 
         <HomeStatsBanner />
 
-        <Paper ref={browseSectionRef} id="browse-recipes" sx={{ p: { xs: 3, md: 4 } }}>
-          <Typography variant="h2" sx={{ fontSize: { xs: "2rem", md: "3rem" } }}>
+        <Paper ref={browseSectionRef} id="browse-recipes" sx={{ p: { xs: 2, sm: 3, md: 4 } }}>
+          <Typography variant="h2" sx={{ fontSize: { xs: "1.75rem", sm: "2rem", md: "3rem" } }}>
             Browse Recipes
           </Typography>
           <Typography

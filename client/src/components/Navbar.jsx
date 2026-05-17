@@ -5,12 +5,12 @@ import { AppBar, Toolbar, Box, Button, Typography, Container } from "@mui/materi
 
 const navButtonSx = (active) => ({
   minWidth: 0,
-  px: { xs: 1.5, md: 2 },
-  py: 1,
+  px: { xs: 1.15, sm: 1.5, md: 2 },
+  py: { xs: 0.8, sm: 1 },
   border: "2px solid #111111",
   bgcolor: active ? "#ff5b1f" : "#ffffff",
   color: active ? "#ffffff" : "#111111",
-  fontSize: { xs: "0.95rem", md: "1rem" },
+  fontSize: { xs: "0.8rem", sm: "0.95rem", md: "1rem" },
   lineHeight: 1,
   "&:hover": {
     backgroundColor: "#d94811",
@@ -44,21 +44,21 @@ const Navbar = () => {
           disableGutters
           sx={{
             minHeight: "auto",
-            px: { xs: 2, md: 3 },
-            py: 2,
+            px: { xs: 1.25, sm: 2, md: 3 },
+            py: { xs: 1.25, sm: 2 },
             boxShadow: "8px 8px 0 #111111",
             bgcolor: "#ffffff",
             display: "flex",
             flexWrap: "wrap",
             justifyContent: "space-between",
-            gap: 2,
+            gap: { xs: 1.25, sm: 2 },
           }}
         >
           <Typography
             component={Link}
             to="/"
             sx={{
-              fontSize: { xs: "1.5rem", md: "1.8rem" },
+              fontSize: { xs: "1.15rem", sm: "1.5rem", md: "1.8rem" },
               fontWeight: 700,
               letterSpacing: "-0.06em",
             }}
@@ -74,8 +74,9 @@ const Navbar = () => {
               display: "flex",
               flexWrap: "wrap",
               alignItems: "center",
-              justifyContent: "flex-end",
-              gap: 1,
+              justifyContent: { xs: "flex-start", sm: "flex-end" },
+              gap: { xs: 0.75, sm: 1 },
+              width: { xs: "100%", md: "auto" },
             }}
           >
             <Button component={Link} to="/" sx={navButtonSx(location.pathname === "/")}>
@@ -99,10 +100,14 @@ const Navbar = () => {
               <>
                 <Typography
                   sx={{
-                    px: 1,
-                    fontSize: { xs: "0.9rem", md: "1rem" },
+                    px: 0.5,
+                    fontSize: { xs: "0.78rem", sm: "0.9rem", md: "1rem" },
                     fontWeight: 500,
-                    display: { xs: "none", sm: "block" },
+                    display: "block",
+                    maxWidth: { xs: 120, sm: 180, md: "none" },
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
                   }}
                 >
                  Welcome  <strong>{user.name} </strong> !

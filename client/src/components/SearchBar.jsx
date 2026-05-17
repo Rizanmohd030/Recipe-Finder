@@ -31,7 +31,7 @@ const SearchBar = () => {
           mx: "auto",
           bgcolor: "#ffffff",
           border: "2px solid #111111",
-          boxShadow: "10px 10px 0 #111111",
+          boxShadow: { xs: "6px 6px 0 #111111", sm: "10px 10px 0 #111111" },
           overflow: "hidden",
         }}
       >
@@ -63,8 +63,8 @@ const SearchBar = () => {
               borderRadius: 0,
             },
             "& .MuiOutlinedInput-input": {
-              py: 2.15,
-              fontSize: { xs: "1rem", md: "1.15rem" },
+              py: { xs: 1.7, sm: 2.15 },
+              fontSize: { xs: "0.95rem", md: "1.15rem" },
               color: "primary.main",
             },
           }}
@@ -76,9 +76,10 @@ const SearchBar = () => {
           onClick={handleSearch}
           sx={{
             border: "none",
-            borderLeft: { xs: "2px solid #111111", sm: "2px solid #111111" },
-            minHeight: { xs: 64, sm: "auto" },
-            fontSize: "1.05rem",
+            borderLeft: { xs: "none", sm: "2px solid #111111" },
+            borderTop: { xs: "2px solid #111111", sm: "none" },
+            minHeight: { xs: 56, sm: "auto" },
+            fontSize: { xs: "0.95rem", sm: "1.05rem" },
             "&:hover": {
               transform: "translate(0, 0)",
             },

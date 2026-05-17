@@ -2,7 +2,7 @@ import React from "react";
 import { Box, Container, Paper, Typography } from "@mui/material";
 
 const panelSx = {
-  p: { xs: 3, md: 4 },
+  p: { xs: 2, sm: 3, md: 4 },
   bgcolor: "#fffdf7",
 };
 
@@ -15,10 +15,11 @@ const badgeSx = {
   bgcolor: "secondary.main",
   color: "#ffffff",
   border: "2px solid #111111",
-  fontSize: "0.72rem",
+  fontSize: "0.68rem",
   fontWeight: 700,
   letterSpacing: "0.1em",
   textTransform: "uppercase",
+  maxWidth: "100%",
 };
 
 const AuthShell = ({ eyebrow, title, description, points = [], children }) => {
@@ -39,8 +40,8 @@ const AuthShell = ({ eyebrow, title, description, points = [], children }) => {
             <Typography
               variant="h2"
               sx={{
-                fontSize: { xs: "2.5rem", md: "4.4rem" },
-                lineHeight: 0.92,
+                fontSize: { xs: "2rem", sm: "2.5rem", md: "4.4rem" },
+                lineHeight: { xs: 0.98, md: 0.92 },
                 mb: 2,
                 maxWidth: 520,
               }}
@@ -50,7 +51,12 @@ const AuthShell = ({ eyebrow, title, description, points = [], children }) => {
 
             <Typography
               variant="body1"
-              sx={{ maxWidth: 560, color: "text.secondary", fontSize: "1.05rem", mb: 3 }}
+              sx={{
+                maxWidth: 560,
+                color: "text.secondary",
+                fontSize: { xs: "0.98rem", md: "1.05rem" },
+                mb: 3,
+              }}
             >
               {description}
             </Typography>

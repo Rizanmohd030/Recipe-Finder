@@ -129,7 +129,7 @@ const FavoritesPage = () => {
   return (
     <>
       <Container maxWidth="lg">
-        <Paper sx={{ p: { xs: 3, md: 4 }, bgcolor: "#fffdf7" }}>
+        <Paper sx={{ p: { xs: 2, sm: 3, md: 4 }, bgcolor: "#fffdf7" }}>
           <Box
             sx={{
               display: "inline-flex",
@@ -139,7 +139,7 @@ const FavoritesPage = () => {
               bgcolor: "secondary.main",
               color: "#ffffff",
               border: "2px solid #111111",
-              fontSize: "0.72rem",
+              fontSize: "0.68rem",
               fontWeight: 700,
               letterSpacing: "0.1em",
               textTransform: "uppercase",
@@ -148,7 +148,7 @@ const FavoritesPage = () => {
             Favorites
           </Box>
 
-          <Typography variant="h2" sx={{ fontSize: { xs: "2.2rem", md: "3.8rem" } }}>
+          <Typography variant="h2" sx={{ fontSize: { xs: "1.95rem", sm: "2.2rem", md: "3.8rem" } }}>
             Your saved recipes
           </Typography>
           <Typography variant="body1" sx={{ mt: 1.5, maxWidth: 640, color: "text.secondary" }}>
@@ -161,7 +161,7 @@ const FavoritesPage = () => {
               mt: 3,
               display: "grid",
               gridTemplateColumns: { xs: "1fr", sm: "repeat(3, 1fr)" },
-              gap: 2,
+              gap: { xs: 1.5, sm: 2 },
             }}
           >
             <Paper sx={{ p: 2, bgcolor: "#ffffff" }}>
@@ -197,7 +197,7 @@ const FavoritesPage = () => {
               <Typography variant="h5">You have not saved any recipes yet.</Typography>
             </Paper>
           ) : (
-            <Grid container spacing={3}>
+            <Grid container spacing={{ xs: 2, md: 3 }}>
               {favoriteRecipes.map((recipe) => (
                 <Grid item key={recipe.idMeal} xs={12} sm={6} md={4} lg={3}>
                   <Box sx={{ display: "flex", flexDirection: "column", gap: 0 }}>
@@ -231,6 +231,7 @@ const FavoritesPage = () => {
                       <Box
                         sx={{
                           display: "flex",
+                          flexWrap: "wrap",
                           justifyContent: "space-between",
                           alignItems: "center",
                           mb: 1,

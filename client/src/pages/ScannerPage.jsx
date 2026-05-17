@@ -152,8 +152,8 @@ export default function ScannerPage() {
 
   return (
     <Container maxWidth="lg">
-      <Paper sx={{ p: { xs: 3, md: 4 }, bgcolor: "#fffdf7" }}>
-        <Typography variant="h2" sx={{ fontSize: { xs: "2.2rem", md: "3.6rem" } }}>
+      <Paper sx={{ p: { xs: 2, sm: 3, md: 4 }, bgcolor: "#fffdf7" }}>
+        <Typography variant="h2" sx={{ fontSize: { xs: "1.95rem", sm: "2.2rem", md: "3.6rem" } }}>
           Scan Food
         </Typography>
         <Typography variant="body1" sx={{ mt: 1.5, color: "text.secondary", maxWidth: 620 }}>
@@ -166,10 +166,10 @@ export default function ScannerPage() {
             mt: 3,
             display: "grid",
             gridTemplateColumns: { xs: "1fr", md: "1.05fr 0.95fr" },
-            gap: 3,
+            gap: { xs: 2, md: 3 },
           }}
         >
-          <Paper sx={{ p: 2, bgcolor: "#ffffff" }}>
+          <Paper sx={{ p: { xs: 1.25, sm: 2 }, bgcolor: "#ffffff" }}>
             {!imagePreview ? (
               <Box
                 component="video"
@@ -200,14 +200,19 @@ export default function ScannerPage() {
             )}
           </Paper>
 
-          <Paper sx={{ p: 3, bgcolor: "#ffffff", boxShadow: "none" }}>
+          <Paper sx={{ p: { xs: 2, sm: 3 }, bgcolor: "#ffffff", boxShadow: "none" }}>
             <Typography variant="h5">Capture or Upload</Typography>
             <Typography variant="body2" sx={{ mt: 1, color: "text.secondary" }}>
               Keep your food centered, then submit it for recipe matches.
             </Typography>
 
-            <Box sx={{ display: "grid", gap: 1.5, mt: 3 }}>
-              <Button variant="contained" color="secondary" onClick={capturePhoto}>
+            <Box sx={{ display: "grid", gap: 1.25, mt: 3 }}>
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={capturePhoto}
+                sx={{ fontSize: { xs: "0.88rem", sm: "1rem" } }}
+              >
                 Capture From Camera
               </Button>
 
@@ -219,7 +224,12 @@ export default function ScannerPage() {
                 style={{ display: "none" }}
               />
 
-              <Button variant="outlined" color="primary" onClick={() => inputRef.current?.click()}>
+              <Button
+                variant="outlined"
+                color="primary"
+                onClick={() => inputRef.current?.click()}
+                sx={{ fontSize: { xs: "0.88rem", sm: "1rem" } }}
+              >
                 Upload Photo
               </Button>
             </Box>
@@ -232,7 +242,7 @@ export default function ScannerPage() {
             )}
 
             {result && (
-              <Paper sx={{ p: 2, mt: 3, bgcolor: "#f3efeb", boxShadow: "none" }}>
+              <Paper sx={{ p: { xs: 1.5, sm: 2 }, mt: 3, bgcolor: "#f3efeb", boxShadow: "none" }}>
                 <Typography variant="caption" sx={{ color: "primary.main", fontWeight: 700 }}>
                   Detected Dish
                 </Typography>
@@ -252,8 +262,8 @@ export default function ScannerPage() {
             <Box
               sx={{
                 display: "grid",
-                gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))",
-                gap: 3,
+                gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 220px), 1fr))",
+                gap: { xs: 2, md: 3 },
               }}
             >
               {recipes.map((recipe) => (
