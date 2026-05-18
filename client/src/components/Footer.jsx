@@ -17,7 +17,7 @@ const Footer = () => {
         }}
       >
         <Typography variant="body2" sx={{ fontWeight: 500 }}>
-          © {new Date().getFullYear()} RecipeFinder by{" "}
+          © {new Date().getFullYear()} RecipeHunt by{" "}
           <Box
             component="a"
             href="https://rizanmi.vercel.app/"
