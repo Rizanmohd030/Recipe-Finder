@@ -5,16 +5,7 @@ import { useAuth } from "../context/authContext";
 import { addFavorite } from "../services/favoriteService";
 import LoadingSpinner from "../components/LoadingSpinner";
 import ErrorComponent from "../components/ErrorComponent";
-import {
-  Container,
-  Grid,
-  Box,
-  Typography,
-  Button,
-  Alert,
-  Paper,
-  Divider,
-} from "@mui/material";
+import { Container, Grid, Box, Typography, Button, Alert, Paper, Divider,} from "@mui/material";
 
 const RecipePage = () => {
   const { recipeId } = useParams();
