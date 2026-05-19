@@ -1,5 +1,6 @@
 import React from "react";
-import { Box, CircularProgress, Typography, Paper } from "@mui/material";
+import { Box, Typography, Paper } from "@mui/material";
+import Loader from "./Loader";
 
 const LoadingSpinner = () => {
   return (
@@ -20,7 +21,7 @@ const LoadingSpinner = () => {
           minWidth: 220,
         }}
       >
-        <CircularProgress color="primary" />
+        <Loader />
         <Typography sx={{ mt: 2, fontWeight: 700 }}>Loading</Typography>
       </Paper>
     </Box>
