@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
-import { Box, Button, Typography, CircularProgress, Container, Paper } from "@mui/material";
+import { Box, Button, Typography, CircularProgress, Container, Paper, IconButton } from "@mui/material";
+import RefreshIcon from "@mui/icons-material/Refresh";
 import RecipeCard from "../components/RecipeCard";
 import { API_BASE_URL } from "../services/apiBase";
 
@@ -130,6 +131,15 @@ export default function ScannerPage() {
     e.target.value = "";
   };
 
+  const handleReset = () => {
+    setImagePreview(null);
+    setResult(null);
+    setRecipes([]);
+    if (inputRef.current) {
+      inputRef.current.value = "";
+    }
+  };
+
   const processImage = async (base64) => {
     setLoading(true);
 
@@ -170,33 +180,51 @@ export default function ScannerPage() {
           }}
         >
           <Paper sx={{ p: { xs: 1.25, sm: 2 }, bgcolor: "#ffffff" }}>
-            {!imagePreview ? (
-              <Box
-                component="video"
-                ref={videoRef}
-                autoPlay
-                playsInline
-                muted
-                sx={{
-                  width: "100%",
-                  aspectRatio: "4 / 3",
-                  objectFit: "cover",
-                  border: "2px solid #111111",
-                  bgcolor: "#111111",
-                }}
-              />
-            ) : (
-              <Box
-                component="img"
-                src={imagePreview}
-                alt="Captured food preview"
-                sx={{
-                  width: "100%",
-                  aspectRatio: "4 / 3",
-                  objectFit: "cover",
-                  border: "2px solid #111111",
-                }}
-              />
+            <Box
+              component="video"
+              ref={videoRef}
+              autoPlay
+              playsInline
+              muted
+              sx={{
+                width: "100%",
+                aspectRatio: "4 / 3",
+                objectFit: "cover",
+                border: "2px solid #111111",
+                bgcolor: "#111111",
+                display: imagePreview ? "none" : "block",
+              }}
+            />
+            {imagePreview && (
+              <Box sx={{ position: "relative" }}>
+                <Box
+                  component="img"
+                  src={imagePreview}
+                  alt="Captured food preview"
+                  sx={{
+                    width: "100%",
+                    aspectRatio: "4 / 3",
+                    objectFit: "cover",
+                    border: "2px solid #111111",
+                    display: "block",
+                  }}
+                />
+                <IconButton
+                  onClick={handleReset}
+                  size="small"
+                  aria-label="Refresh"
+                  sx={{
+                    position: "absolute",
+                    top: 12,
+                    right: 12,
+                    bgcolor: "rgba(255, 255, 255, 0.8)",
+                    color: "black",
+                    "&:hover": { bgcolor: "rgba(255, 255, 255, 1)" },
+                  }}
+                >
+                  <RefreshIcon />
+                </IconButton>
+              </Box>
             )}
           </Paper>
 
